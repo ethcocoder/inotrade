@@ -126,6 +126,7 @@ body, html {
         </div>
         <div class="login-right">
             <form class="login-card" method="post" action="/login">
+                <?= $csrf ?? '' ?>
                 <h3 class="mb-4 fw-bold">Sign in</h3>
                 <div class="mb-3">
                     <label for="email" class="form-label">Email Address</label>

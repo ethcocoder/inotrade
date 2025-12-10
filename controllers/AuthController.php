@@ -5,6 +5,7 @@ class AuthController extends BaseController {
     // Registration page and handler
     public function register() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->verifyCsrf();
             $data = [
                 'name' => trim($_POST['name'] ?? ''),
                 'email' => trim($_POST['email'] ?? ''),
@@ -30,54 +31,47 @@ class AuthController extends BaseController {
                 $userId = $this->user->createUser($data);
                 $_SESSION['user_id'] = $userId;
                 $_SESSION['user_role'] = $data['role'];
-                $this->redirect('/home');
+                $this->redirect('/dashboard');
             } else {
                 $this->render('auth/register', [
                     'errors' => $errors,
-                    'data' => $data
+                    'data' => $data,
+                    'csrf' => $this->csrfInput()
                 ]);
                 return;
             }
         }
-        $this->render('auth/register');
+        $this->render('auth/register', ['csrf' => $this->csrfInput()]);
     }
 
     // Login page and handler
     public function login() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->verifyCsrf();
             $email = trim($_POST['email'] ?? '');
             $password = $_POST['password'] ?? '';
             $errors = [];
             if (empty($email)) $errors['email'] = 'Email is required';
             if (empty($password)) $errors['password'] = 'Password is required';
             if (empty($errors)) {
-                $user = $this->user->findByEmail($email);
-                if (!$user) {
-                    error_log('DEBUG: No user found for email: ' . $email);
-                } else {
-                    error_log('DEBUG: User found: ' . print_r($user, true));
-                    if (password_verify($password, $user['password_hash'])) {
-                        error_log('DEBUG: Password matches for user: ' . $email);
-                    } else {
-                        error_log('DEBUG: Password does NOT match for user: ' . $email);
-                    }
-                }
                 $user = $this->user->verifyPassword($email, $password);
                 if ($user) {
+                    session_regenerate_id(true);
                     $_SESSION['user_id'] = $user['id'];
                     $_SESSION['user_role'] = $user['role'];
-                    $this->redirect('/home');
+                    $this->redirect('/dashboard');
                 } else {
                     $errors['general'] = 'Invalid email or password';
                 }
             }
             $this->render('auth/login', [
                 'errors' => $errors,
-                'data' => ['email' => $email]
+                'data' => ['email' => $email],
+                'csrf' => $this->csrfInput()
             ]);
             return;
         }
-        $this->render('auth/login');
+        $this->render('auth/login', ['csrf' => $this->csrfInput()]);
     }
 
     // Logout handler

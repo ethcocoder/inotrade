@@ -1,0 +1,50 @@
+.login-bg,
+.register-bg {
+    background: url('https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=1200&q=80') center center/cover no-repeat;
+}
+
+.login-card,
+.register-card {
+    background: rgba(255, 255, 255, 0.13);
+    border-radius: 1.5rem;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1.5px solid rgba(255, 255, 255, 0.18);
+}
+
+.dashboard-sidebar {
+    background: linear-gradient(180deg, #007bff 0%, #00c6ff 100%);
+    color: #fff;
+}
+
+.dashboard-sidebar .nav-link {
+    color: #fff;
+    font-weight: 500;
+}
+
+.dashboard-sidebar .nav-link.active,
+.dashboard-sidebar .nav-link:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+}
+
+.card {
+    border-radius: 1rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+.btn-primary {
+    background: linear-gradient(90deg, #007bff 0%, #00c6ff 100%);
+    border: none;
+    border-radius: 2rem;
+    font-weight: 700;
+    font-size: 1.15rem;
+    padding: 0.7rem 1.5rem;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(90deg, #00c6ff 0%, #007bff 100%);
+    transform: translateY(-2px) scale(1.03);
+}

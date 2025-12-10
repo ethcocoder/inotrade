@@ -141,6 +141,7 @@ class MessageController extends BaseController {
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->verifyCsrf();
             $receiverType = $_POST['receiver_type'] ?? ($_GET['type'] ?? 'user');
             $data = [
                 'sender_id' => $currentUser['id'],
@@ -180,7 +181,8 @@ class MessageController extends BaseController {
                 $admins = $this->user->getAdmins();
                 $this->render('messages/send', [
                     'admins' => $admins,
-                    'currentUser' => $currentUser
+                    'currentUser' => $currentUser,
+                    'csrf' => $this->csrfInput()
                 ]);
                 return;
             }
@@ -189,7 +191,8 @@ class MessageController extends BaseController {
                 $users = $this->user->getAll();
                 $this->render('messages/select_user', [
                     'users' => $users,
-                    'currentUser' => $currentUser
+                    'currentUser' => $currentUser,
+                    'csrf' => $this->csrfInput()
                 ]);
                 return;
             }
@@ -201,7 +204,8 @@ class MessageController extends BaseController {
             $this->render('messages/send', [
                 'receiver' => $receiver,
                 'innovation' => $innovation,
-                'currentUser' => $currentUser
+                'currentUser' => $currentUser,
+                'csrf' => $this->csrfInput()
             ]);
         }
     }

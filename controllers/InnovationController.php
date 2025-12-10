@@ -71,7 +71,8 @@ class InnovationController extends BaseController {
         $this->render('innovations/form', [
             'categories' => $categories,
             'innovation' => null,
-            'currentUser' => $this->getCurrentUser()
+            'currentUser' => $this->getCurrentUser(),
+            'csrf' => $this->csrfInput()
         ]);
     }
     
@@ -83,6 +84,8 @@ class InnovationController extends BaseController {
             $this->redirect('/innovations/create');
         }
         
+        $this->verifyCsrf();
+
         $data = [
             'user_id' => $_SESSION['user_id'],
             'title' => trim($_POST['title'] ?? ''),
@@ -189,7 +192,8 @@ class InnovationController extends BaseController {
             'innovation' => $innovation,
             'categories' => $categories,
             'media' => $media,
-            'currentUser' => $currentUser
+            'currentUser' => $currentUser,
+            'csrf' => $this->csrfInput()
         ]);
     }
     
@@ -220,6 +224,8 @@ class InnovationController extends BaseController {
             $this->redirect("/innovations/{$id}/edit");
         }
         
+        $this->verifyCsrf();
+
         $data = [
             'title' => trim($_POST['title'] ?? ''),
             'description' => trim($_POST['description'] ?? ''),
@@ -429,6 +435,7 @@ class InnovationController extends BaseController {
     // Handle sponsor POST
     public function sponsorInnovation($id = null) {
         $this->requireLogin();
+        $this->verifyCsrf();
         $currentUser = $this->getCurrentUser();
         if ($currentUser['role'] !== 'sponsor') {
             $this->redirect('/innovations/' . $id);

@@ -198,5 +198,23 @@ abstract class BaseController {
             $view === 'profile_edit'
         );
     }
+
+    protected function csrf() {
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
+        return $_SESSION['csrf_token'];
+    }
+
+    protected function csrfInput() {
+        return '<input type="hidden" name="csrf_token" value="' . $this->csrf() . '">';
+    }
+
+    protected function verifyCsrf() {
+        if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+            $this->setFlash('error', 'Invalid CSRF token.');
+            $this->redirect($_SERVER['HTTP_REFERER'] ?? '/');
+        }
+    }
 }
 ?> 

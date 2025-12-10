@@ -18,7 +18,8 @@ class ProfileController extends BaseController {
             $this->redirect('/login');
         }
         $this->render('profile_edit', [
-            'user' => $user
+            'user' => $user,
+            'csrf' => $this->csrfInput()
         ], 'layouts/dashboard');
     }
 
@@ -30,6 +31,7 @@ class ProfileController extends BaseController {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->redirect('/profile/edit');
         }
+        $this->verifyCsrf();
         $data = [
             'name' => trim($_POST['name'] ?? ''),
             'email' => trim($_POST['email'] ?? ''),

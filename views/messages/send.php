@@ -40,6 +40,7 @@
                     </div>
                 <?php endif; ?>
                 <form method="POST" action="">
+                    <?= $csrf ?? '' ?>
                     <input type="hidden" name="receiver_id" value="<?= htmlspecialchars($receiver['id']) ?>">
                     <?php if (!empty($innovation)): ?>
                         <input type="hidden" name="innovation_id" value="<?= htmlspecialchars($innovation['id']) ?>">

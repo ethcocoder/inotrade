@@ -1,0 +1,13 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Redirect trailing slashes to non-slashed URLs
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)/$ /$1 [L,R=301]
+
+    # Handle front controller
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+</IfModule>

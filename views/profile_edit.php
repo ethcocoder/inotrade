@@ -13,6 +13,7 @@ $errors)): ?>
         </div>
     <?php endif; ?>
     <form method="post" action="/profile/update" enctype="multipart/form-data">
+        <?= $csrf ?? '' ?>
         <div class="mb-3 text-center">
             <label class="form-label">Profile Image</label><br>
             <?php

@@ -4,6 +4,7 @@
 <div class="container my-4">
     <h2 class="mb-4">Sponsor "<?= htmlspecialchars($innovation['title']) ?>"</h2>
     <form action="/innovations/<?= $innovation['id'] ?>/sponsor" method="post">
+        <?= $csrf ?? '' ?>
         <div class="mb-3">
             <label for="amount" class="form-label">Sponsorship Amount (optional)</label>
             <input type="number" step="0.01" min="0" name="amount" id="amount" class="form-control" placeholder="Enter amount (optional)">

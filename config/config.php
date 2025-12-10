@@ -5,7 +5,7 @@ define('APP_URL', 'http://localhost/innovation-trading-center');
 define('APP_VERSION', '1.0.0');
 
 // Database Configuration
-define('DB_HOST', 'localhost');
+define('DB_HOST', '127.0.0.1');
 define('DB_NAME', 'innovation_trading_center');
 define('DB_USER', 'root');
 define('DB_PASS', '');

@@ -78,6 +78,7 @@
                         <?php endforeach; ?>
                     </div>
                     <form method="post" action="/messages/send?receiver_id=<?= $contactOrGroup['id'] ?>&type=<?= $chatType ?>">
+                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                         <div class="input-group">
                             <input type="text" name="body" class="form-control" placeholder="Type a message..." required>
                             <input type="hidden" name="receiver_id" value="<?= $contactOrGroup['id'] ?>">

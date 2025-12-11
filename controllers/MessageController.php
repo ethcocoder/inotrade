@@ -84,6 +84,9 @@ class MessageController extends BaseController {
             }
         }
 
+        // Generate CSRF token if not exists
+        $this->csrf();
+        
         $this->render('messages/inbox', [
             'conversations' => $conversations,
             'currentUser' => $currentUser,

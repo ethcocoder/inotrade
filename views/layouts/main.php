@@ -16,7 +16,7 @@ $useGlassNav = $isHome || $isAuth;
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="/assets/css/styles.css" rel="stylesheet">
+    <link href="/assets/css/styles.css?v=<?= time() ?>" rel="stylesheet">
     <style>
         :root {
             --font-primary: 'Outfit', sans-serif;

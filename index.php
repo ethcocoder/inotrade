@@ -133,6 +133,13 @@ if (preg_match('#^/admin/messages/delete/(\d+)$#', $path, $matches)) {
     exit;
 }
 
+if (preg_match('#^/admin/contact-messages/delete/(\d+)$#', $path, $matches)) {
+    require 'controllers/AdminController.php';
+    $controller = new AdminController();
+    $controller->contactMessageDelete($matches[1]);
+    exit;
+}
+
 // Route to appropriate controller
 switch ($path) {
     case '/home':
@@ -242,6 +249,11 @@ switch ($path) {
         require 'controllers/AdminController.php';
         $controller = new AdminController();
         $controller->messageDelete();
+        break;
+    case '/admin/contact-messages':
+        require 'controllers/AdminController.php';
+        $controller = new AdminController();
+        $controller->contactMessages();
         break;
     case '/about':
         require_once 'controllers/PageController.php';

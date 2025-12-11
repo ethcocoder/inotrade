@@ -21,8 +21,13 @@ class PageController extends BaseController {
             return;
         }
 
-        // In a real app, send email here.
-        // For now, just simulate success.
+        require_once __DIR__ . '/../models/ContactMessage.php';
+        $contactModel = new ContactMessage();
+        $contactModel->create([
+            'name' => $name,
+            'email' => $email,
+            'message' => $message
+        ]);
         
         $this->setFlash('success', 'Thank you for your message! We will get back to you soon.');
         $this->redirect('/contact');

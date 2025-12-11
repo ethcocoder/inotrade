@@ -468,6 +468,9 @@ if (isset($currentUser)) {
                 <a class="nav-link <?= strpos($_SERVER['REQUEST_URI'], '/admin/messages') === 0 ? 'active' : '' ?>" href="/admin/messages">
                     <i class="bi bi-envelope-fill"></i> All Messages
                 </a>
+                <a class="nav-link <?= strpos($_SERVER['REQUEST_URI'], '/admin/contact-messages') === 0 ? 'active' : '' ?>" href="/admin/contact-messages">
+                    <i class="bi bi-inbox-fill"></i> Public Inquiries
+                </a>
             </div>
             <?php endif; ?>
             

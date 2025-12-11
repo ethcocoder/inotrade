@@ -201,4 +201,31 @@ class AdminController extends BaseController {
         $this->setFlash('success', 'Message deleted.');
         $this->redirect('/admin/messages');
     }
+
+    // Contact Messages (Public Inquiries)
+    public function contactMessages() {
+        require_once __DIR__ . '/../models/ContactMessage.php';
+        $model = new ContactMessage();
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $pagination = $model->paginate($page, 20);
+        
+        $currentUser = $this->getCurrentUser();
+        $this->render('dashboard/admin_contact_messages', [
+            'messages' => $pagination['data'],
+            'pagination' => $pagination,
+            'currentUser' => $currentUser
+        ]);
+    }
+
+    public function contactMessageDelete($id = null) {
+        if (!$id) $id = $_GET['id'] ?? null;
+        if (!$id) $this->redirect('/admin/contact-messages');
+        
+        require_once __DIR__ . '/../models/ContactMessage.php';
+        $model = new ContactMessage();
+        $model->delete($id);
+        
+        $this->setFlash('success', 'Contact message deleted.');
+        $this->redirect('/admin/contact-messages');
+    }
 } 

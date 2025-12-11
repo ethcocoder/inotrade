@@ -114,12 +114,15 @@ class AdminController extends BaseController {
         $search = $_GET['search'] ?? '';
         $status = $_GET['status'] ?? '';
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-        $innovations = $this->innovation->getAllWithAdminFilters($search, $status, $page);
+        $result = $this->innovation->getAllWithAdminFilters($search, $status, $page);
         $currentUser = $this->getCurrentUser();
         $this->render('dashboard/admin_innovations', [
-            'innovations' => $innovations,
-            'search' => $search,
-            'status' => $status,
+            'innovations' => $result['data'] ?? [],  // Pass just the data array
+            'pagination' => $result,
+            'filters' => [
+                'search' => $search,
+                'status' => $status
+            ],
             'currentUser' => $currentUser
         ]);
     }

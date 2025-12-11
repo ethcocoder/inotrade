@@ -42,26 +42,28 @@
             </thead>
             <tbody>
                 <?php foreach ($innovations as $inv): ?>
+                    <?php if (!is_array($inv) || !isset($inv['id'])) continue; ?>
                     <tr>
-                        <td><?= htmlspecialchars($inv['title']) ?></td>
-                        <td><?= htmlspecialchars($inv['innovator_name']) ?></td>
-                        <td><?= htmlspecialchars($inv['category_name']) ?></td>
+                        <td><?= htmlspecialchars($inv['title'] ?? '') ?></td>
+                        <td><?= htmlspecialchars($inv['innovator_name'] ?? 'Unknown') ?></td>
+                        <td><?= htmlspecialchars($inv['category_name'] ?? 'Uncategorized') ?></td>
                         <td>
-                            <span class="badge bg-<?= $inv['status'] === 'published' ? 'success' : ($inv['status'] === 'draft' ? 'secondary' : ($inv['status'] === 'funded' ? 'info' : 'dark')) ?>">
-                                <?= ucfirst($inv['status']) ?>
+                            <?php $status = $inv['status'] ?? 'draft'; ?>
+                            <span class="badge bg-<?= $status === 'published' ? 'success' : ($status === 'draft' ? 'secondary' : ($status === 'funded' ? 'info' : 'dark')) ?>">
+                                <?= ucfirst($status) ?>
                             </span>
                         </td>
-                        <td><?= date('M j, Y', strtotime($inv['created_at'])) ?></td>
+                        <td><?= isset($inv['created_at']) ? date('M j, Y', strtotime($inv['created_at'])) : '-' ?></td>
                         <td>
                             <a href="/innovations/<?= $inv['id'] ?>" class="btn btn-sm btn-outline-info">View</a>
-                            <a href="/admin/innovations/edit/<?= $inv['id'] ?>" class="btn btn-sm btn-outline-warning">Edit</a>
-                            <?php if ($inv['status'] !== 'published'): ?>
-                                <a href="/admin/innovations/approve/<?= $inv['id'] ?>" class="btn btn-sm btn-outline-success">Approve</a>
+                            <a href="/innovations/<?= $inv['id'] ?>/edit" class="btn btn-sm btn-outline-warning">Edit</a>
+                            <?php if (($inv['status'] ?? '') !== 'published'): ?>
+                                <a href="/innovations/<?= $inv['id'] ?>/toggle-status" class="btn btn-sm btn-outline-success">Publish</a>
                             <?php endif; ?>
-                            <?php if ($inv['status'] === 'published'): ?>
-                                <a href="/admin/innovations/reject/<?= $inv['id'] ?>" class="btn btn-sm btn-outline-secondary">Reject</a>
+                            <?php if (($inv['status'] ?? '') === 'published'): ?>
+                                <a href="/innovations/<?= $inv['id'] ?>/toggle-status" class="btn btn-sm btn-outline-secondary">Unpublish</a>
                             <?php endif; ?>
-                            <a href="/admin/innovations/delete/<?= $inv['id'] ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this innovation?');">Delete</a>
+                            <a href="/admin/innovation/delete?id=<?= $inv['id'] ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this innovation?');">Delete</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>

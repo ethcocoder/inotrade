@@ -31,21 +31,54 @@
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($messages as $msg): ?>
-                    <?php if (!is_array($msg) || !isset($msg['id'])) continue; ?>
-                    <tr class="<?= !empty($msg['is_read']) ? '' : 'table-warning' ?>">
-                        <td><?= htmlspecialchars($msg['sender_name'] ?? 'Unknown') ?></td>
-                        <td><?= htmlspecialchars($msg['receiver_name'] ?? 'Unknown') ?></td>
-                        <td><?= htmlspecialchars($msg['subject'] ?? '(No subject)') ?></td>
-                        <td><?= isset($msg['sent_at']) ? date('M j, Y H:i', strtotime($msg['sent_at'])) : '-' ?></td>
-                        <td><?= !empty($msg['is_read']) ? 'Read' : '<strong>Unread</strong>' ?></td>
-                        <td>
-                            <a href="/messages/conversation?contact_id=<?= $msg['sender_id'] ?? '' ?>" class="btn btn-sm btn-outline-info">View Conversation</a>
-                            <a href="/admin/messages/delete/<?= $msg['id'] ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this message?');">Delete</a>
+                <?php if (empty($messages)): ?>
+                    <tr>
+                        <td colspan="6" class="text-center py-5 text-muted">
+                            <i class="bi bi-chat-dots display-4 opacity-25 d-block mb-3"></i>
+                            <div>No messages found matching your criteria.</div>
                         </td>
                     </tr>
-                <?php endforeach; ?>
+                <?php else: ?>
+                    <?php foreach ($messages as $msg): ?>
+                        <?php if (!is_array($msg) || !isset($msg['id'])) continue; ?>
+                        <tr class="<?= !empty($msg['is_read']) ? '' : 'table-warning' ?>">
+                            <td><?= htmlspecialchars($msg['sender_name'] ?? 'Unknown') ?></td>
+                            <td><?= htmlspecialchars($msg['receiver_name'] ?? 'Unknown') ?></td>
+                            <td><?= htmlspecialchars($msg['subject'] ?? '(No subject)') ?></td>
+                            <td><?= isset($msg['sent_at']) ? date('M j, Y H:i', strtotime($msg['sent_at'])) : '-' ?></td>
+                            <td><?= !empty($msg['is_read']) ? 'Read' : '<strong>Unread</strong>' ?></td>
+                            <td>
+                                <a href="/messages/conversation?contact_id=<?= $msg['sender_id'] ?? '' ?>" class="btn btn-sm btn-outline-info">View Conversation</a>
+                                <a href="/admin/messages/delete/<?= $msg['id'] ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this message?');">Delete</a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>
+
+    <?php 
+    // Pagination
+    $currentFilters = [];
+    if (!empty($filters['search'])) $currentFilters['search'] = $filters['search'];
+    if (!empty($filters['status'])) $currentFilters['status'] = $filters['status'];
+    $queryString = http_build_query($currentFilters);
+    ?>
+
+    <?php if (isset($pagination['last_page']) && $pagination['last_page'] > 1): ?>
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                <li class="page-item <?= $pagination['current_page'] <= 1 ? 'disabled' : '' ?>">
+                    <a class="page-link" href="?page=<?= max(1, $pagination['current_page'] - 1) ?>&<?= $queryString ?>">Previous</a>
+                </li>
+                <li class="page-item disabled">
+                    <span class="page-link">Page <?= $pagination['current_page'] ?> of <?= $pagination['last_page'] ?></span>
+                </li>
+                <li class="page-item <?= $pagination['current_page'] >= $pagination['last_page'] ? 'disabled' : '' ?>">
+                    <a class="page-link" href="?page=<?= min($pagination['last_page'], $pagination['current_page'] + 1) ?>&<?= $queryString ?>">Next</a>
+                </li>
+            </ul>
+        </nav>
+    <?php endif; ?>
 </div> 

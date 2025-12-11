@@ -573,8 +573,21 @@ if (isset($currentUser)) {
         
         <main class="dashboard-content">
             <?php if (isset($_SESSION['flash'])): ?>
-                <div class="alert alert-<?= $_SESSION['flash']['type'] ?> alert-dismissible fade show shadow-sm border-0 rounded-3 mb-4" role="alert">
-                    <?= htmlspecialchars($_SESSION['flash']['message']) ?>
+                <?php 
+                $alertType = $_SESSION['flash']['type'] === 'error' ? 'danger' : $_SESSION['flash']['type'];
+                $alertIcon = match($alertType) {
+                    'success' => 'bi-check-circle-fill',
+                    'danger' => 'bi-exclamation-triangle-fill',
+                    'warning' => 'bi-exclamation-circle-fill',
+                    'info' => 'bi-info-circle-fill',
+                    default => 'bi-bell-fill'
+                };
+                ?>
+                <div class="alert alert-<?= $alertType ?> alert-dismissible fade show shadow-sm border-0 rounded-3 mb-4 d-flex align-items-center" role="alert">
+                    <i class="bi <?= $alertIcon ?> fs-4 me-3"></i>
+                    <div>
+                        <?= htmlspecialchars($_SESSION['flash']['message']) ?>
+                    </div>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
                 <?php unset($_SESSION['flash']); ?>

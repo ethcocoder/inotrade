@@ -97,29 +97,29 @@
     ?>
     <img src="<?= htmlspecialchars($profileImg) ?>" class="profile-img mb-3" alt="Profile Image">
     <div class="profile-info text-center mt-2">
-        <h2><?= htmlspecialchars($user['name']) ?></h2>
-        <span class="badge bg-primary text-light text-capitalize"><?= htmlspecialchars($user['role']) ?></span>
-        <?php if ($user['is_verified']): ?>
+        <h2><?= htmlspecialchars($user['name'] ?? 'Unknown User') ?></h2>
+        <span class="badge bg-primary text-light text-capitalize"><?= htmlspecialchars($user['role'] ?? 'user') ?></span>
+        <?php if (!empty($user['is_verified'])): ?>
             <span class="badge bg-success">Verified</span>
         <?php endif; ?>
-        <?php if (!$user['is_active']): ?>
+        <?php if (empty($user['is_active'])): ?>
             <span class="badge bg-danger">Inactive</span>
         <?php endif; ?>
-        <p class="mt-2 mb-1"><i class="bi bi-envelope"></i> <?= htmlspecialchars($user['email']) ?></p>
-        <?php if ($user['organization']): ?>
+        <p class="mt-2 mb-1"><i class="bi bi-envelope"></i> <?= htmlspecialchars($user['email'] ?? '') ?></p>
+        <?php if (!empty($user['organization'])): ?>
             <p class="mb-1"><i class="bi bi-building"></i> <?= htmlspecialchars($user['organization']) ?></p>
         <?php endif; ?>
-        <?php if ($user['bio']): ?>
+        <?php if (!empty($user['bio'])): ?>
             <p class="mb-1"><i class="bi bi-person-lines-fill"></i> <?= nl2br(htmlspecialchars($user['bio'])) ?></p>
         <?php endif; ?>
     </div>
     <div class="profile-meta">
-        <?php if ($user['phone']): ?>
+        <?php if (!empty($user['phone'])): ?>
             <div><i class="bi bi-telephone"></i> <?= htmlspecialchars($user['phone']) ?></div>
         <?php endif; ?>
-        <?php if ($user['location']): ?>
+        <?php if (!empty($user['location'])): ?>
             <div><i class="bi bi-geo-alt"></i> <?= htmlspecialchars($user['location']) ?></div>
         <?php endif; ?>
-        <div><i class="bi bi-calendar"></i> Joined <?= date('F Y', strtotime($user['created_at'])) ?></div>
+        <div><i class="bi bi-calendar"></i> Joined <?= isset($user['created_at']) ? date('F Y', strtotime($user['created_at'])) : 'Unknown' ?></div>
     </div>
 </div> 

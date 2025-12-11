@@ -32,14 +32,15 @@
             </thead>
             <tbody>
                 <?php foreach ($messages as $msg): ?>
-                    <tr class="<?= $msg['is_read'] ? '' : 'table-warning' ?>">
-                        <td><?= htmlspecialchars($msg['sender_name']) ?></td>
-                        <td><?= htmlspecialchars($msg['receiver_name']) ?></td>
-                        <td><?= htmlspecialchars($msg['subject']) ?></td>
-                        <td><?= date('M j, Y H:i', strtotime($msg['sent_at'])) ?></td>
-                        <td><?= $msg['is_read'] ? 'Read' : '<strong>Unread</strong>' ?></td>
+                    <?php if (!is_array($msg) || !isset($msg['id'])) continue; ?>
+                    <tr class="<?= !empty($msg['is_read']) ? '' : 'table-warning' ?>">
+                        <td><?= htmlspecialchars($msg['sender_name'] ?? 'Unknown') ?></td>
+                        <td><?= htmlspecialchars($msg['receiver_name'] ?? 'Unknown') ?></td>
+                        <td><?= htmlspecialchars($msg['subject'] ?? '(No subject)') ?></td>
+                        <td><?= isset($msg['sent_at']) ? date('M j, Y H:i', strtotime($msg['sent_at'])) : '-' ?></td>
+                        <td><?= !empty($msg['is_read']) ? 'Read' : '<strong>Unread</strong>' ?></td>
                         <td>
-                            <a href="/messages/conversation?contact_id=<?= $msg['sender_id'] ?>" class="btn btn-sm btn-outline-info">View Conversation</a>
+                            <a href="/messages/conversation?contact_id=<?= $msg['sender_id'] ?? '' ?>" class="btn btn-sm btn-outline-info">View Conversation</a>
                             <a href="/admin/messages/delete/<?= $msg['id'] ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this message?');">Delete</a>
                         </td>
                     </tr>

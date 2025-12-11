@@ -16,14 +16,15 @@
             </thead>
             <tbody>
                 <?php foreach ($favorites as $fav): ?>
+                    <?php if (!is_array($fav) || !isset($fav['id'])) continue; ?>
                     <tr>
-                        <td><?= htmlspecialchars($fav['title']) ?></td>
-                        <td><?= htmlspecialchars($fav['innovator_name']) ?></td>
-                        <td><?= htmlspecialchars($fav['category_name']) ?></td>
-                        <td><?= date('M j, Y', strtotime($fav['created_at'])) ?></td>
+                        <td><?= htmlspecialchars($fav['title'] ?? '') ?></td>
+                        <td><?= htmlspecialchars($fav['innovator_name'] ?? 'Unknown') ?></td>
+                        <td><?= htmlspecialchars($fav['category_name'] ?? 'Uncategorized') ?></td>
+                        <td><?= isset($fav['created_at']) ? date('M j, Y', strtotime($fav['created_at'])) : '-' ?></td>
                         <td>
                             <a href="/innovations/<?= $fav['id'] ?>" class="btn btn-sm btn-outline-info">View</a>
-                            <a href="/favorites/remove/<?= $fav['id'] ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Remove this innovation from your favorites?');">Remove</a>
+                            <a href="/innovations/<?= $fav['id'] ?>/favorite" class="btn btn-sm btn-outline-danger" onclick="return confirm('Remove this innovation from your favorites?');">Remove</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>

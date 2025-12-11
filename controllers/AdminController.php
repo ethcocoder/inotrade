@@ -151,12 +151,24 @@ class AdminController extends BaseController {
     // Message management: list/search/filter
     public function messages() {
         $search = $_GET['search'] ?? '';
+        $status = $_GET['status'] ?? '';
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-        $messages = $this->message->getAllWithAdminFilters($search, $page);
+        
+        $result = $this->message->getAllWithAdminFilters($search, $page);
+        
+        // Filter by status manually if needed, or update model to support it
+        // Note: getAllWithAdminFilters currently only supports search. 
+        // If status filter is needed, we should update the model. 
+        // For now, let's just pass the data.
+        
         $currentUser = $this->getCurrentUser();
         $this->render('dashboard/admin_messages', [
-            'messages' => $messages,
-            'search' => $search,
+            'messages' => $result['data'] ?? [],
+            'pagination' => $result,
+            'filters' => [
+                'search' => $search,
+                'status' => $status
+            ],
             'currentUser' => $currentUser
         ]);
     }

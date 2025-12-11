@@ -111,6 +111,7 @@ body {
 .login-bg,
 .register-bg {
     background: url('https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=1920&q=80') center center/cover no-repeat;
+    background-color: #0f172a;
     position: relative;
     z-index: 0;
 }

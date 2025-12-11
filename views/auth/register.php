@@ -65,11 +65,21 @@
                         <div class="row g-3 mb-3">
                             <div class="col-md-6">
                                 <label for="password" class="form-label text-white-50 small text-uppercase tracking-wider">Password</label>
-                                <input type="password" name="password" id="password" class="form-control" required placeholder="••••••••">
+                                <div class="input-group">
+                                    <input type="password" name="password" id="password" class="form-control" required placeholder="••••••••">
+                                    <button class="btn btn-light bg-white bg-opacity-90 border-start-0" type="button" onclick="togglePassword('password', this)">
+                                        <i class="bi bi-eye text-muted"></i>
+                                    </button>
+                                </div>
                             </div>
                             <div class="col-md-6">
                                 <label for="password_confirm" class="form-label text-white-50 small text-uppercase tracking-wider">Confirm Password</label>
-                                <input type="password" name="password_confirm" id="password_confirm" class="form-control" required placeholder="••••••••">
+                                <div class="input-group">
+                                    <input type="password" name="password_confirm" id="password_confirm" class="form-control" required placeholder="••••••••">
+                                    <button class="btn btn-light bg-white bg-opacity-90 border-start-0" type="button" onclick="togglePassword('password_confirm', this)">
+                                        <i class="bi bi-eye text-muted"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
@@ -102,6 +112,23 @@
                     </form>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
+<script>
+function togglePassword(inputId, btn) {
+    const input = document.getElementById(inputId);
+    const icon = btn.querySelector('i');
+    
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('bi-eye');
+        icon.classList.add('bi-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.remove('bi-eye-slash');
+        icon.classList.add('bi-eye');
+    }
+}
+</script>

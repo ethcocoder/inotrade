@@ -13,16 +13,16 @@
                     <span class="small fw-medium tracking-wide">The Future of Ethiopian Innovation</span>
                 </div>
                 
-                <h1 class="display-3 fw-extrabold mb-4 lh-tight tracking-tight">
+                <h1 class="display-3 fw-extrabold mb-4 lh-tight tracking-tight animate-fade-up">
                     Where Ideas Meet <br>
                     <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400" style="-webkit-background-clip: text; -webkit-text-fill-color: transparent; background-image: linear-gradient(90deg, #60a5fa, #818cf8);">Opportunity</span>
                 </h1>
                 
-                <p class="lead mb-5 text-gray-300 fs-4 fw-light opacity-75" style="max-width: 600px;">
+                <p class="lead mb-5 text-gray-300 fs-4 fw-light opacity-75 animate-fade-up animate-delay-100" style="max-width: 600px;">
                     Connect with Ethiopia's brightest minds. The Innovation Trading Center Platform bridges the gap between visionary innovators and global sponsors.
                 </p>
                 
-                <div class="d-flex flex-wrap gap-3">
+                <div class="d-flex flex-wrap gap-3 animate-fade-up animate-delay-200">
                     <a href="/register" class="btn btn-primary btn-lg rounded-pill px-5 py-3 fs-5 fw-bold shadow-lg shadow-blue-500/50">
                         Get Started
                     </a>
@@ -184,6 +184,17 @@
     50% { transform: translate(20%, -20%) translateY(-15px); }
     100% { transform: translate(20%, -20%) translateY(0px); }
 }
+@keyframes fade-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up {
+    animation: fade-up 0.8s ease-out forwards;
+    opacity: 0; /* Start hidden */
+}
+.animate-delay-100 { animation-delay: 0.1s; }
+.animate-delay-200 { animation-delay: 0.2s; }
+.animate-delay-300 { animation-delay: 0.3s; }
 .hover-shadow-lg:hover {
     transform: translateY(-5px);
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;

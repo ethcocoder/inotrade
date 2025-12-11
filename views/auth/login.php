@@ -45,7 +45,10 @@
                             <label for="password" class="form-label text-white-50 small text-uppercase tracking-wider">Password</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-white bg-opacity-10 border-end-0 text-white-50"><i class="bi bi-lock"></i></span>
-                                <input type="password" class="form-control border-start-0 ps-0" id="password" name="password" placeholder="••••••••" required>
+                                <input type="password" class="form-control border-start-0 border-end-0 ps-0" id="password" name="password" placeholder="••••••••" required>
+                                <button class="btn btn-light bg-white bg-opacity-10 border-start-0 text-white-50" type="button" style="border-color: rgba(255,255,255,0.2);" onclick="togglePassword('password', this)">
+                                    <i class="bi bi-eye"></i>
+                                </button>
                             </div>
                         </div>
                         
@@ -77,3 +80,19 @@
         </div>
     </div>
 </div>
+<script>
+function togglePassword(inputId, btn) {
+    const input = document.getElementById(inputId);
+    const icon = btn.querySelector('i');
+    
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('bi-eye');
+        icon.classList.add('bi-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.remove('bi-eye-slash');
+        icon.classList.add('bi-eye');
+    }
+}
+</script>

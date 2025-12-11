@@ -122,7 +122,7 @@
         <div class="row g-4">
             <div class="col-md-4">
                 <div class="card h-100 border-0 shadow-sm hover-shadow-lg transition-all p-4 text-center">
-                    <div class="rounded-circle bg-blue-50 mx-auto mb-4 d-flex align-items-center justify-content-center" style="width: 80px; height: 80px; background-color: #eff6ff;">
+                    <div class="rounded-circle bg-blue-50 mx-auto mb-4 d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
                         <i class="bi bi-lightbulb text-primary fs-1"></i>
                     </div>
                     <h4 class="fw-bold mb-3">Innovators</h4>
@@ -135,7 +135,7 @@
             
             <div class="col-md-4">
                 <div class="card h-100 border-0 shadow-sm hover-shadow-lg transition-all p-4 text-center">
-                    <div class="rounded-circle bg-indigo-50 mx-auto mb-4 d-flex align-items-center justify-content-center" style="width: 80px; height: 80px; background-color: #eef2ff;">
+                    <div class="rounded-circle bg-indigo-50 mx-auto mb-4 d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
                         <i class="bi bi-briefcase text-primary fs-1"></i>
                     </div>
                     <h4 class="fw-bold mb-3">Sponsors</h4>
@@ -148,7 +148,7 @@
             
             <div class="col-md-4">
                 <div class="card h-100 border-0 shadow-sm hover-shadow-lg transition-all p-4 text-center">
-                    <div class="rounded-circle bg-purple-50 mx-auto mb-4 d-flex align-items-center justify-content-center" style="width: 80px; height: 80px; background-color: #f5f3ff;">
+                    <div class="rounded-circle bg-purple-50 mx-auto mb-4 d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
                         <i class="bi bi-people text-primary fs-1"></i>
                     </div>
                     <h4 class="fw-bold mb-3">Collaboration</h4>

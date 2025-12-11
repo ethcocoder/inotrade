@@ -414,3 +414,41 @@ body {
 [data-theme="dark"] .text-info {
     color: #22d3ee !important;
 }
+
+/* List Group Dark Mode */
+[data-theme="dark"] .list-group-item {
+    background-color: var(--bg-card);
+    border-color: var(--border-color);
+    color: var(--text-body);
+}
+
+[data-theme="dark"] .list-group-item-action:hover,
+[data-theme="dark"] .list-group-item-action:focus {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--text-body);
+}
+
+/* Feature Icon Backgrounds */
+.bg-blue-50 {
+    background-color: #eff6ff;
+}
+
+.bg-indigo-50 {
+    background-color: #eef2ff;
+}
+
+.bg-purple-50 {
+    background-color: #f5f3ff;
+}
+
+[data-theme="dark"] .bg-blue-50 {
+    background-color: rgba(59, 130, 246, 0.15);
+}
+
+[data-theme="dark"] .bg-indigo-50 {
+    background-color: rgba(99, 102, 241, 0.15);
+}
+
+[data-theme="dark"] .bg-purple-50 {
+    background-color: rgba(139, 92, 246, 0.15);
+}

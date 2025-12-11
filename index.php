@@ -119,6 +119,13 @@ if (preg_match('#^/admin/users/delete/(\d+)$#', $path, $matches)) {
     exit;
 }
 
+if (preg_match('#^/admin/innovations/toggle-status/(\d+)$#', $path, $matches)) {
+    require 'controllers/AdminController.php';
+    $controller = new AdminController();
+    $controller->innovationToggleStatus($matches[1]);
+    exit;
+}
+
 // Route to appropriate controller
 switch ($path) {
     case '/home':

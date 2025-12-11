@@ -58,10 +58,10 @@
                             <a href="/innovations/<?= $inv['id'] ?>" class="btn btn-sm btn-outline-info">View</a>
                             <a href="/innovations/<?= $inv['id'] ?>/edit" class="btn btn-sm btn-outline-warning">Edit</a>
                             <?php if (($inv['status'] ?? '') !== 'published'): ?>
-                                <a href="/innovations/<?= $inv['id'] ?>/toggle-status" class="btn btn-sm btn-outline-success">Publish</a>
+                                <a href="/admin/innovations/toggle-status/<?= $inv['id'] ?>" class="btn btn-sm btn-outline-success">Publish</a>
                             <?php endif; ?>
                             <?php if (($inv['status'] ?? '') === 'published'): ?>
-                                <a href="/innovations/<?= $inv['id'] ?>/toggle-status" class="btn btn-sm btn-outline-secondary">Unpublish</a>
+                                <a href="/admin/innovations/toggle-status/<?= $inv['id'] ?>" class="btn btn-sm btn-outline-secondary">Unpublish</a>
                             <?php endif; ?>
                             <a href="/admin/innovation/delete?id=<?= $inv['id'] ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this innovation?');">Delete</a>
                         </td>

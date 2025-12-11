@@ -127,15 +127,20 @@ class AdminController extends BaseController {
         ]);
     }
 
-    // Innovation management: approve/reject
+    // Innovation management: publish/unpublish
     public function innovationToggleStatus($id = null) {
         if (!$id) $id = $_GET['id'] ?? null;
         if (!$id) $this->redirect('/admin/innovations');
+        
         $innovation = $this->innovation->find($id);
         if (!$innovation) $this->redirect('/admin/innovations');
-        $newStatus = $innovation['status'] === 'approved' ? 'rejected' : 'approved';
+        
+        // Toggle status: if currently published (or funded/completed), unpublish to draft.
+        // If draft, publish.
+        $newStatus = ($innovation['status'] === 'draft') ? 'published' : 'draft';
+        
         $this->innovation->update($id, ['status' => $newStatus]);
-        $this->setFlash('success', 'Innovation status updated.');
+        $this->setFlash('success', 'Innovation status updated to ' . ucfirst($newStatus) . '.');
         $this->redirect('/admin/innovations');
     }
 

@@ -1,7 +1,7 @@
-<div class="login-bg min-vh-100 d-flex align-items-center position-relative">
+<div class="login-bg bg-dark min-vh-100 d-flex align-items-center position-relative">
     <div class="container position-relative z-index-1">
         <div class="row align-items-center justify-content-center">
-            <div class="col-lg-6 text-white mb-5 mb-lg-0 pe-lg-5">
+            <div class="col-lg-6 text-white d-none d-lg-block mb-5 mb-lg-0 pe-lg-5">
                 <h1 class="display-3 fw-extrabold mb-4 tracking-tight">Welcome<br>Back</h1>
                 <p class="lead text-gray-200 mb-5 opacity-90 fs-5 fw-light">
                     Continue your innovation journey. Access your dashboard to manage projects, connect with partners, and track progress.
@@ -14,12 +14,13 @@
                 </div>
             </div>
             
-            <div class="col-lg-5 col-xl-4">
+            <div class="col-md-8 col-lg-5 col-xl-4">
                 <div class="card login-card border-0 p-4 p-md-5">
                     <form method="post" action="/login">
                         <?= $csrf ?? '' ?>
                         <div class="text-center mb-4">
-                            <h3 class="fw-bold mb-1">Sign In</h3>
+                            <h2 class="fw-bold mb-1 d-lg-none text-white">Welcome Back</h2>
+                            <h3 class="fw-bold mb-1 d-none d-lg-block">Sign In</h3>
                             <p class="text-white-50 small">Enter your credentials to access your account</p>
                         </div>
                         

@@ -91,6 +91,7 @@ if (isset($currentUser)) {
     <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link href="/public/assets/css/styles.css?v=<?= time() ?>" rel="stylesheet">
+    <script src="/public/assets/js/theme.js"></script>
     <style>
         :root {
             --sidebar-width: 280px;
@@ -508,6 +509,9 @@ if (isset($currentUser)) {
             </div>
             
             <div class="header-actions">
+                <button class="header-icon-btn border-0 me-3" type="button" onclick="toggleTheme()" aria-label="Toggle theme">
+                    <i class="bi bi-moon-fill theme-icon"></i>
+                </button>
                 <div class="header-search d-none d-md-block">
                     <i class="bi bi-search"></i>
                     <input type="text" placeholder="Search...">

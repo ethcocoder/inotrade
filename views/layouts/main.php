@@ -17,6 +17,7 @@ $useGlassNav = $isHome || $isAuth;
     <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link href="/public/assets/css/styles.css?v=<?= time() ?>" rel="stylesheet">
+    <script src="/public/assets/js/theme.js"></script>
     <style>
         :root {
             --font-primary: 'Outfit', sans-serif;
@@ -125,6 +126,11 @@ $useGlassNav = $isHome || $isAuth;
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto align-items-center">
+                <li class="nav-item me-2">
+                    <button class="btn btn-link nav-link p-2 d-flex align-items-center" onclick="toggleTheme()" aria-label="Toggle theme">
+                        <i class="bi bi-moon-fill theme-icon fs-5"></i>
+                    </button>
+                </li>
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <li class="nav-item"><a class="nav-link" href="/home">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="/about">About</a></li>

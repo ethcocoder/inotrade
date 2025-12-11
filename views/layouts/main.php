@@ -178,6 +178,11 @@ $useGlassNav = $isHome || $isAuth;
         <?= $content ?>
     </div>
 <?php endif; ?>
+<footer class="py-4 text-center <?php echo $useGlassNav ? 'text-white' : 'text-muted'; ?>" style="font-size: 0.9rem; <?php echo $useGlassNav ? 'background-color: #0f172a;' : ''; ?>">
+    <div class="container">
+        <p class="mb-0 opacity-75">Powered by The CEO of Ethco Coder <span class="fw-bold">Natnael Ermiyas</span></p>
+    </div>
+</footer>
 <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>
 </html> 

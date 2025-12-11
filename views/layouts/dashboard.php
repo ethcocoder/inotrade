@@ -1,3 +1,84 @@
+<?php
+// Fetch real notification counts
+$notifications = [];
+$totalNotifications = 0;
+
+if (isset($currentUser)) {
+    // Get database instance
+    require_once __DIR__ . '/../../config/database.php';
+    $db = new Database();
+    
+    // Unread messages count
+    $unreadMessages = $db->fetch("SELECT COUNT(*) as count FROM messages WHERE receiver_id = :user_id AND is_read = 0", ['user_id' => $currentUser['id']]);
+    $unreadMsgCount = $unreadMessages['count'] ?? 0;
+    if ($unreadMsgCount > 0) {
+        $notifications[] = [
+            'type' => 'message',
+            'icon' => 'bi-envelope-fill',
+            'color' => 'primary',
+            'text' => "You have {$unreadMsgCount} unread message" . ($unreadMsgCount > 1 ? 's' : ''),
+            'link' => '/messages',
+            'count' => $unreadMsgCount
+        ];
+        $totalNotifications += $unreadMsgCount;
+    }
+    
+    // Role-specific notifications
+    if ($currentUser['role'] === 'innovator') {
+        // Check for new sponsorship requests
+        try {
+            $sponsorships = $db->fetch("SELECT COUNT(*) as count FROM sponsorships WHERE innovation_id IN (SELECT id FROM innovations WHERE user_id = :user_id) AND status = 'pending'", ['user_id' => $currentUser['id']]);
+            $sponsorCount = $sponsorships['count'] ?? 0;
+            if ($sponsorCount > 0) {
+                $notifications[] = [
+                    'type' => 'sponsorship',
+                    'icon' => 'bi-cash-coin',
+                    'color' => 'success',
+                    'text' => "You have {$sponsorCount} pending sponsorship" . ($sponsorCount > 1 ? 's' : ''),
+                    'link' => '/my-sponsorships',
+                    'count' => $sponsorCount
+                ];
+                $totalNotifications += $sponsorCount;
+            }
+        } catch (Exception $e) {}
+    }
+    
+    if ($currentUser['role'] === 'admin') {
+        // Pending innovations for approval
+        try {
+            $pendingInnovations = $db->fetch("SELECT COUNT(*) as count FROM innovations WHERE status = 'draft'");
+            $pendingCount = $pendingInnovations['count'] ?? 0;
+            if ($pendingCount > 0) {
+                $notifications[] = [
+                    'type' => 'pending',
+                    'icon' => 'bi-hourglass-split',
+                    'color' => 'warning',
+                    'text' => "{$pendingCount} innovation" . ($pendingCount > 1 ? 's' : '') . " awaiting review",
+                    'link' => '/admin/innovations',
+                    'count' => $pendingCount
+                ];
+                $totalNotifications += $pendingCount;
+            }
+        } catch (Exception $e) {}
+        
+        // New users today
+        try {
+            $newUsers = $db->fetch("SELECT COUNT(*) as count FROM users WHERE DATE(created_at) = CURDATE()");
+            $newUserCount = $newUsers['count'] ?? 0;
+            if ($newUserCount > 0) {
+                $notifications[] = [
+                    'type' => 'users',
+                    'icon' => 'bi-person-plus-fill',
+                    'color' => 'info',
+                    'text' => "{$newUserCount} new user" . ($newUserCount > 1 ? 's' : '') . " joined today",
+                    'link' => '/admin/users',
+                    'count' => $newUserCount
+                ];
+            }
+        } catch (Exception $e) {}
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -429,10 +510,50 @@
                     <input type="text" placeholder="Search...">
                 </div>
                 
-                <a href="/messages" class="header-icon-btn text-decoration-none">
-                    <i class="bi bi-bell"></i>
-                    <span class="badge bg-danger rounded-pill">3</span>
-                </a>
+                <!-- Notifications Dropdown -->
+                <div class="dropdown">
+                    <button class="header-icon-btn position-relative border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-bell"></i>
+                        <?php if ($totalNotifications > 0): ?>
+                            <span class="badge bg-danger rounded-pill position-absolute" style="top: -4px; right: -4px; font-size: 0.65rem;"><?= $totalNotifications > 9 ? '9+' : $totalNotifications ?></span>
+                        <?php endif; ?>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-3 p-2" style="width: 320px; max-height: 400px; overflow-y: auto;">
+                        <li class="px-3 py-2 border-bottom">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0 fw-bold">Notifications</h6>
+                                <?php if ($totalNotifications > 0): ?>
+                                    <span class="badge bg-primary rounded-pill"><?= $totalNotifications ?></span>
+                                <?php endif; ?>
+                            </div>
+                        </li>
+                        <?php if (empty($notifications)): ?>
+                            <li class="px-3 py-4 text-center text-muted">
+                                <i class="bi bi-bell-slash fs-3 d-block mb-2"></i>
+                                No new notifications
+                            </li>
+                        <?php else: ?>
+                            <?php foreach ($notifications as $notif): ?>
+                                <li>
+                                    <a class="dropdown-item rounded-2 py-2 d-flex align-items-center gap-3" href="<?= $notif['link'] ?>">
+                                        <div class="bg-<?= $notif['color'] ?> bg-opacity-10 text-<?= $notif['color'] ?> rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; flex-shrink: 0;">
+                                            <i class="bi <?= $notif['icon'] ?>"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <div class="small fw-medium"><?= htmlspecialchars($notif['text']) ?></div>
+                                            <div class="text-muted" style="font-size: 0.75rem;">Click to view</div>
+                                        </div>
+                                    </a>
+                                </li>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                        <li class="border-top mt-2 pt-2">
+                            <a class="dropdown-item rounded-2 py-2 text-center text-primary small" href="/messages">
+                                <i class="bi bi-envelope me-1"></i> View all messages
+                            </a>
+                        </li>
+                    </ul>
+                </div>
                 
                 <?php if (isset($currentUser)): ?>
                 <div class="dropdown">

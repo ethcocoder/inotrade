@@ -4,9 +4,9 @@ $notifications = [];
 $totalNotifications = 0;
 
 if (isset($currentUser)) {
-    // Get database instance
+    // Get database instance (singleton)
     require_once __DIR__ . '/../../config/database.php';
-    $db = new Database();
+    $db = Database::getInstance();
     
     // Unread messages count
     $unreadMessages = $db->fetch("SELECT COUNT(*) as count FROM messages WHERE receiver_id = :user_id AND is_read = 0", ['user_id' => $currentUser['id']]);

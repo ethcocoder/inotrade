@@ -5,7 +5,7 @@
 <!-- Welcome Banner -->
 <div class="row mb-4">
     <div class="col-12">
-        <div class="card border-0 bg-gradient text-white overflow-hidden position-relative" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+        <div class="card border-0 bg-gradient text-white overflow-hidden position-relative" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;">
             <div class="card-body p-4 position-relative z-index-1">
                 <div class="row align-items-center">
                     <div class="col-lg-8">

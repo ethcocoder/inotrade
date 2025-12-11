@@ -42,17 +42,28 @@ class HomeController extends BaseController {
             // Get innovator's innovations
             $innovations = $this->user->getInnovations($currentUser['id']);
             
+            // Get favorites
+            $favorites = $this->user->getFavorites($currentUser['id']);
+            
             // Get messages
             $messages = $this->message->getInbox($currentUser['id'], 1);
             
             // Get unread message count
             $unreadCount = $this->message->getUnreadCount($currentUser['id']);
             
+            // Build stats array for the view
+            $stats = [
+                'my_innovations' => is_array($innovations) ? count($innovations) : 0,
+                'messages' => isset($messages['total']) ? $messages['total'] : 0,
+                'favorites' => is_array($favorites) ? count($favorites) : 0
+            ];
+            
             $this->render('dashboard/innovator', [
                 'currentUser' => $currentUser,
                 'innovations' => $innovations,
                 'messages' => $messages,
-                'unreadCount' => $unreadCount
+                'unreadCount' => $unreadCount,
+                'stats' => $stats
             ]);
         } else {
             // Sponsor dashboard

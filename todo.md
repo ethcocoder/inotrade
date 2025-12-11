@@ -1,4 +1,3 @@
-1 fix the terminal problem
-2 make the rigister and login page professional and comapteble with the home page
-3 include contact and about in home with their section to be professional 
-4 make every thing responsive and profesioonal
+1 when i see the new message the notification don't dis appear
+2 when i log in as admin it is npot redirecting if it is true login info
+and the site still need upgrade and update in the ui part 

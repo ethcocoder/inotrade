@@ -107,6 +107,11 @@ class Message extends BaseModel {
         return $result['count'];
     }
     
+    public function markConversationAsRead($userId, $contactId) {
+        $sql = "UPDATE messages SET is_read = 1 WHERE receiver_id = :user_id AND sender_id = :contact_id AND is_read = 0";
+        return $this->db->query($sql, ['user_id' => $userId, 'contact_id' => $contactId]);
+    }
+    
     public function getRecentContacts($userId) {
         $sql = "SELECT DISTINCT 
                        CASE 

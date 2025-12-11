@@ -66,6 +66,8 @@ class MessageController extends BaseController {
             $contactOrGroup = $this->user->find($chatId);
             if ($contactOrGroup) {
                 $conversation = $this->message->getConversation($currentUser['id'], $chatId);
+                // Mark all messages from this contact as read
+                $this->message->markConversationAsRead($currentUser['id'], $chatId);
                 // Mark as active in chat list
                 foreach ($conversations as &$c) {
                     if ($c['type'] === 'private' && $c['id'] == $chatId) $c['active'] = true;

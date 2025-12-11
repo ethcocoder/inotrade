@@ -18,10 +18,20 @@
                 <div class="card login-card border-0 p-4 p-md-5">
                     <form method="post" action="/login">
                         <?= $csrf ?? '' ?>
-                        <div class="text-center mb-5">
+                        <div class="text-center mb-4">
                             <h3 class="fw-bold mb-1">Sign In</h3>
                             <p class="text-white-50 small">Enter your credentials to access your account</p>
                         </div>
+                        
+                        <?php if (!empty($errors)): ?>
+                            <div class="alert alert-danger py-2 mb-4 rounded-3">
+                                <?php if (isset($errors['general'])): ?>
+                                    <small><?= htmlspecialchars($errors['general']) ?></small>
+                                <?php else: ?>
+                                    <small>Please check your input and try again.</small>
+                                <?php endif; ?>
+                            </div>
+                        <?php endif; ?>
                         
                         <div class="mb-4">
                             <label for="email" class="form-label text-white-50 small text-uppercase tracking-wider">Email Address</label>

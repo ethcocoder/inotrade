@@ -1,14 +1,18 @@
 <?php
 // Application Configuration
+// Application Configuration
 define('APP_NAME', 'Innovation Trading Center');
-define('APP_URL', 'http://localhost:8000');
+// Auto-detect URL or set manually
+$protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
+$host = $_SERVER['HTTP_HOST'] ?? 'localhost:8000';
+define('APP_URL', "$protocol://$host");
 define('APP_VERSION', '1.0.0');
 
-// Database Configuration
-define('DB_HOST', '127.0.0.1');
-define('DB_NAME', 'inotrade');
-define('DB_USER', 'root');
-define('DB_PASS', '');
+// Database Configuration (UPDATE THESE FOR DEPLOYMENT)
+define('DB_HOST', '127.0.0.1'); // Change to your hosting DB host
+define('DB_NAME', 'inotrade');  // Change to your hosting DB name
+define('DB_USER', 'root');      // Change to your hosting DB user
+define('DB_PASS', '');          // Change to your hosting DB password
 
 // File Upload Configuration
 define('UPLOAD_PATH', 'uploads/');

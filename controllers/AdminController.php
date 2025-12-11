@@ -54,15 +54,49 @@ class AdminController extends BaseController {
         ]);
     }
 
-    // User management: activate/deactivate
-    public function userToggleStatus($id = null) {
+    // User management: edit user
+    public function userEdit($id = null) {
         if (!$id) $id = $_GET['id'] ?? null;
         if (!$id) $this->redirect('/admin/users');
         $user = $this->user->find($id);
         if (!$user) $this->redirect('/admin/users');
-        $newStatus = $user['status'] === 'active' ? 'inactive' : 'active';
-        $this->user->update($id, ['status' => $newStatus]);
-        $this->setFlash('success', 'User status updated.');
+        
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = [
+                'name' => trim($_POST['name'] ?? ''),
+                'email' => trim($_POST['email'] ?? ''),
+                'role' => $_POST['role'] ?? $user['role'],
+                'organization' => trim($_POST['organization'] ?? ''),
+                'bio' => trim($_POST['bio'] ?? ''),
+            ];
+            $this->user->update($id, $data);
+            $this->setFlash('success', 'User updated successfully.');
+            $this->redirect('/admin/users');
+        }
+        
+        $currentUser = $this->getCurrentUser();
+        $this->render('dashboard/admin_user_edit', [
+            'user' => $user,
+            'currentUser' => $currentUser,
+            'csrf' => $this->csrfInput()
+        ]);
+    }
+
+    // User management: activate user
+    public function userActivate($id = null) {
+        if (!$id) $id = $_GET['id'] ?? null;
+        if (!$id) $this->redirect('/admin/users');
+        $this->user->update($id, ['is_active' => 1]);
+        $this->setFlash('success', 'User activated successfully.');
+        $this->redirect('/admin/users');
+    }
+
+    // User management: deactivate user
+    public function userDeactivate($id = null) {
+        if (!$id) $id = $_GET['id'] ?? null;
+        if (!$id) $this->redirect('/admin/users');
+        $this->user->update($id, ['is_active' => 0]);
+        $this->setFlash('success', 'User deactivated successfully.');
         $this->redirect('/admin/users');
     }
 

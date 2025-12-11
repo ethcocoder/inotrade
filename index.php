@@ -83,6 +83,42 @@ if ($path === '/update-sponsorship-status' && $_SERVER['REQUEST_METHOD'] === 'PO
     exit;
 }
 
+// Admin User Routes with ID
+if (preg_match('#^/admin/users/view/(\d+)$#', $path, $matches)) {
+    require 'controllers/AdminController.php';
+    $controller = new AdminController();
+    $controller->userView($matches[1]);
+    exit;
+}
+
+if (preg_match('#^/admin/users/edit/(\d+)$#', $path, $matches)) {
+    require 'controllers/AdminController.php';
+    $controller = new AdminController();
+    $controller->userEdit($matches[1]);
+    exit;
+}
+
+if (preg_match('#^/admin/users/activate/(\d+)$#', $path, $matches)) {
+    require 'controllers/AdminController.php';
+    $controller = new AdminController();
+    $controller->userActivate($matches[1]);
+    exit;
+}
+
+if (preg_match('#^/admin/users/deactivate/(\d+)$#', $path, $matches)) {
+    require 'controllers/AdminController.php';
+    $controller = new AdminController();
+    $controller->userDeactivate($matches[1]);
+    exit;
+}
+
+if (preg_match('#^/admin/users/delete/(\d+)$#', $path, $matches)) {
+    require 'controllers/AdminController.php';
+    $controller = new AdminController();
+    $controller->userDelete($matches[1]);
+    exit;
+}
+
 // Route to appropriate controller
 switch ($path) {
     case '/home':

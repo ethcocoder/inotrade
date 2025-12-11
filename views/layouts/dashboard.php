@@ -278,6 +278,10 @@
             .mobile-menu-btn {
                 display: flex !important;
             }
+            
+            .sidebar-close-btn {
+                display: flex !important;
+            }
         }
         
         .mobile-menu-btn {
@@ -292,16 +296,51 @@
             color: #64748b;
             margin-right: 1rem;
         }
+        
+        .sidebar-close-btn {
+            display: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 0.5rem;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .sidebar-close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+        
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            backdrop-filter: blur(4px);
+        }
+        
+        .sidebar-overlay.show {
+            display: block;
+        }
     </style>
 </head>
 <body>
     <!-- Sidebar -->
     <aside class="dashboard-sidebar" id="sidebar">
-        <div class="sidebar-brand">
-            <h4>
+        <div class="sidebar-brand d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">
                 <span class="brand-icon"><i class="bi bi-lightning-charge-fill"></i></span>
                 InoTrade
             </h4>
+            <button class="sidebar-close-btn" onclick="closeSidebar()">
+                <i class="bi bi-x-lg"></i>
+            </button>
         </div>
         
         <nav class="sidebar-nav">
@@ -378,7 +417,7 @@
     <div class="dashboard-main">
         <header class="dashboard-header">
             <div class="d-flex align-items-center">
-                <button class="mobile-menu-btn" onclick="document.getElementById('sidebar').classList.toggle('show')">
+                <button class="mobile-menu-btn" onclick="openSidebar()">
                     <i class="bi bi-list"></i>
                 </button>
                 <h4><?= htmlspecialchars($title ?? 'Dashboard') ?></h4>
@@ -424,6 +463,22 @@
         </main>
     </div>
     
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+    
     <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function openSidebar() {
+            document.getElementById('sidebar').classList.add('show');
+            document.getElementById('sidebarOverlay').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('show');
+            document.getElementById('sidebarOverlay').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+    </script>
 </body>
 </html>

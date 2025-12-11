@@ -1,3 +1,10 @@
+<?php
+$isHome = ($_SERVER['REQUEST_URI'] === '/' || $_SERVER['REQUEST_URI'] === '/home');
+$isAuth = (strpos($_SERVER['REQUEST_URI'], '/login') !== false || strpos($_SERVER['REQUEST_URI'], '/register') !== false);
+$isAbout = (strpos($_SERVER['REQUEST_URI'], '/about') !== false);
+$isContact = (strpos($_SERVER['REQUEST_URI'], '/contact') !== false);
+$useGlassNav = $isHome || $isAuth;
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -110,21 +117,14 @@
     else if ($isAbout) echo 'about-page';
     else if ($isContact) echo 'contact-page';
 ?>">
-<?php
-$isHome = ($_SERVER['REQUEST_URI'] === '/' || $_SERVER['REQUEST_URI'] === '/home');
-$isAuth = ($_SERVER['REQUEST_URI'] === '/login' || $_SERVER['REQUEST_URI'] === '/register');
-$isAbout = ($_SERVER['REQUEST_URI'] === '/about');
-$isContact = ($_SERVER['REQUEST_URI'] === '/contact');
-$useGlassNav = $isHome || $isAuth;
-?>
-<nav class="navbar navbar-expand-lg <?php echo $useGlassNav ? 'navbar-glass' : 'navbar-dark bg-primary'; ?>">
-    <div class="container-fluid">
+<nav class="navbar navbar-expand-lg <?php echo $useGlassNav ? 'navbar-glass' : 'navbar-light bg-white shadow-sm'; ?>">
+    <div class="container">
         <a class="navbar-brand" href="/home">Innovation Trading Center</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
+            <ul class="navbar-nav ms-auto align-items-center">
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <li class="nav-item"><a class="nav-link" href="/home">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
@@ -132,17 +132,18 @@ $useGlassNav = $isHome || $isAuth;
                     <li class="nav-item"><a class="nav-link" href="/profile">Profile</a></li>
                     <li class="nav-item"><a class="nav-link" href="/innovations">Innovations</a></li>
                     <li class="nav-item"><a class="nav-link" href="/messages">Messages</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/messages/send?contact_admin=1">Contact Admin</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/messages/send?contact_admin=1">Support</a></li>
                     <?php if ($_SESSION['user_role'] === 'admin'): ?>
                         <li class="nav-item"><a class="nav-link" href="/admin">Admin</a></li>
                     <?php endif; ?>
-                    <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                    <li class="nav-item"><a class="nav-link text-danger" href="/logout">Logout</a></li>
                 <?php else: ?>
                     <li class="nav-item"><a class="nav-link" href="/home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/innovations">Innovations</a></li>
                     <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
                     <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
                     <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
-                    <li class="nav-item"><a class="nav-link register-link" href="/register">Register</a></li>
+                    <li class="nav-item"><a class="nav-link register-link" href="/register">Get Started</a></li>
                 <?php endif; ?>
             </ul>
         </div>
@@ -150,8 +151,8 @@ $useGlassNav = $isHome || $isAuth;
 </nav>
 <?php if ($isHome || $isAuth || $isAbout || $isContact): ?>
     <?php if (isset($_SESSION['flash'])): ?>
-        <div class="container mt-4">
-            <div class="alert alert-<?= $_SESSION['flash']['type'] ?> alert-dismissible fade show" role="alert">
+        <div class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 2000; margin-top: 80px;">
+            <div class="alert alert-<?= $_SESSION['flash']['type'] ?> alert-dismissible fade show shadow-lg border-0 rounded-3" role="alert">
                 <?= htmlspecialchars($_SESSION['flash']['message']) ?>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
@@ -160,9 +161,9 @@ $useGlassNav = $isHome || $isAuth;
     <?php endif; ?>
     <?= $content ?>
 <?php else: ?>
-    <div class="container">
+    <div class="container py-5 mt-5">
         <?php if (isset($_SESSION['flash'])): ?>
-            <div class="alert alert-<?= $_SESSION['flash']['type'] ?> alert-dismissible fade show" role="alert">
+            <div class="alert alert-<?= $_SESSION['flash']['type'] ?> alert-dismissible fade show shadow-sm border-0 rounded-3 mb-4" role="alert">
                 <?= htmlspecialchars($_SESSION['flash']['message']) ?>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>

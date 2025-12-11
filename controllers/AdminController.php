@@ -27,13 +27,16 @@ class AdminController extends BaseController {
         $role = $_GET['role'] ?? '';
         $status = $_GET['status'] ?? '';
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-        $users = $this->user->getAllWithFilters($search, $role, $status, $page);
+        $result = $this->user->getAllWithFilters($search, $role, $status, $page);
         $currentUser = $this->getCurrentUser();
         $this->render('dashboard/admin_users', [
-            'users' => $users,
-            'search' => $search,
-            'role' => $role,
-            'status' => $status,
+            'users' => $result['data'] ?? [],  // Pass just the data array
+            'pagination' => $result,            // Pass full result for pagination
+            'filters' => [                      // Pass filters for form
+                'search' => $search,
+                'role' => $role,
+                'status' => $status
+            ],
             'currentUser' => $currentUser
         ]);
     }

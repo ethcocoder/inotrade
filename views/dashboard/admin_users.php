@@ -40,27 +40,28 @@
             </thead>
             <tbody>
                 <?php foreach ($users as $user): ?>
+                    <?php if (!is_array($user) || !isset($user['id'])) continue; ?>
                     <tr>
-                        <td><?= htmlspecialchars($user['name']) ?></td>
-                        <td><?= htmlspecialchars($user['email']) ?></td>
-                        <td><?= ucfirst($user['role']) ?></td>
+                        <td><?= htmlspecialchars($user['name'] ?? '') ?></td>
+                        <td><?= htmlspecialchars($user['email'] ?? '') ?></td>
+                        <td><?= ucfirst($user['role'] ?? 'unknown') ?></td>
                         <td>
-                            <?php if ($user['is_active']): ?>
+                            <?php if (!empty($user['is_active'])): ?>
                                 <span class="badge bg-success">Active</span>
                             <?php else: ?>
                                 <span class="badge bg-secondary">Inactive</span>
                             <?php endif; ?>
                         </td>
-                        <td><?= date('M j, Y', strtotime($user['created_at'])) ?></td>
+                        <td><?= isset($user['created_at']) ? date('M j, Y', strtotime($user['created_at'])) : '-' ?></td>
                         <td>
                             <a href="/admin/users/view/<?= $user['id'] ?>" class="btn btn-sm btn-outline-info">View</a>
                             <a href="/admin/users/edit/<?= $user['id'] ?>" class="btn btn-sm btn-outline-warning">Edit</a>
-                            <?php if ($user['is_active']): ?>
+                            <?php if (!empty($user['is_active'])): ?>
                                 <a href="/admin/users/deactivate/<?= $user['id'] ?>" class="btn btn-sm btn-outline-secondary">Deactivate</a>
                             <?php else: ?>
                                 <a href="/admin/users/activate/<?= $user['id'] ?>" class="btn btn-sm btn-outline-success">Activate</a>
                             <?php endif; ?>
-                            <?php if ($user['id'] !== $currentUser['id']): ?>
+                            <?php if (isset($currentUser) && $user['id'] !== $currentUser['id']): ?>
                                 <a href="/admin/users/delete/<?= $user['id'] ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this user?');">Delete</a>
                             <?php endif; ?>
                         </td>

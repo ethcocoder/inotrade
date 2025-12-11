@@ -41,8 +41,15 @@ class InnovationController extends BaseController {
             $this->redirect('/innovations');
         }
         
-        // Increment view count
-        $this->innovation->incrementViews($id);
+        // Increment view count if not already viewed in this session
+        if (!isset($_SESSION['viewed_innovations'])) {
+            $_SESSION['viewed_innovations'] = [];
+        }
+        
+        if (!in_array($id, $_SESSION['viewed_innovations'])) {
+            $this->innovation->incrementViews($id);
+            $_SESSION['viewed_innovations'][] = $id;
+        }
         
         // Get media files
         $media = $this->innovation->getMedia($id);
@@ -58,7 +65,8 @@ class InnovationController extends BaseController {
             'innovation' => $innovation,
             'media' => $media,
             'canEdit' => $canEdit,
-            'currentUser' => $currentUser
+            'currentUser' => $currentUser,
+            'csrf' => $this->csrfInput()
         ]);
     }
     
@@ -157,7 +165,8 @@ class InnovationController extends BaseController {
                 'data' => $data,
                 'categories' => $categories,
                 'innovation' => null,
-                'currentUser' => $this->getCurrentUser()
+                'currentUser' => $this->getCurrentUser(),
+                'csrf' => $this->csrfInput()
             ]);
         }
     }
@@ -269,7 +278,8 @@ class InnovationController extends BaseController {
                 'categories' => $categories,
                 'innovation' => $innovation,
                 'media' => $media,
-                'currentUser' => $currentUser
+                'currentUser' => $currentUser,
+                'csrf' => $this->csrfInput()
             ]);
         }
     }
@@ -285,6 +295,7 @@ class InnovationController extends BaseController {
         }
         
         $this->requireLogin();
+        $this->verifyCsrf();
         
         $innovation = $this->innovation->find($id);
         if (!$innovation) {
@@ -428,7 +439,8 @@ class InnovationController extends BaseController {
         }
         $this->render('innovations/sponsor_form', [
             'innovation' => $innovation,
-            'currentUser' => $currentUser
+            'currentUser' => $currentUser,
+            'csrf' => $this->csrfInput()
         ]);
     }
 

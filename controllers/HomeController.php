@@ -51,10 +51,10 @@ class HomeController extends BaseController {
             // Get unread message count
             $unreadCount = $this->message->getUnreadCount($currentUser['id']);
             
-            // Build stats array for the view
+            // Build stats array for the view (using unread count for messages)
             $stats = [
                 'my_innovations' => is_array($innovations) ? count($innovations) : 0,
-                'messages' => isset($messages['total']) ? $messages['total'] : 0,
+                'messages' => $unreadCount,  // Show only unread messages
                 'favorites' => is_array($favorites) ? count($favorites) : 0
             ];
             
@@ -68,12 +68,12 @@ class HomeController extends BaseController {
         } else {
             // Sponsor dashboard
             $favorites = $this->user->getFavorites($currentUser['id']);
-            $messages = $this->message->getInbox($currentUser['id'], 1);
+            $unreadCount = $this->message->getUnreadCount($currentUser['id']);
             $sponsorship = new Sponsorship();
             $sponsored = $sponsorship->countBySponsor($currentUser['id']);
             $stats = [
                 'favorites' => is_array($favorites) ? count($favorites) : 0,
-                'messages' => isset($messages['total']) ? $messages['total'] : 0,
+                'messages' => $unreadCount,  // Show only unread messages
                 'sponsored' => $sponsored
             ];
             $this->render('dashboard/sponsor', [

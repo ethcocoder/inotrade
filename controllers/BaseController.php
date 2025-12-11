@@ -211,8 +211,19 @@ abstract class BaseController {
     }
 
     protected function verifyCsrf() {
-        if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
-            $this->setFlash('error', 'Invalid CSRF token.');
+        $sessionToken = $_SESSION['csrf_token'] ?? null;
+        $postToken = $_POST['csrf_token'] ?? null;
+        
+        // If no session token exists, generate one (user may have had session expire)
+        if (empty($sessionToken)) {
+            $this->setFlash('error', 'Your session has expired. Please try again.');
+            $this->redirect($_SERVER['HTTP_REFERER'] ?? '/');
+            return;
+        }
+        
+        // If no post token or tokens don't match
+        if (empty($postToken) || !hash_equals($sessionToken, $postToken)) {
+            $this->setFlash('error', 'Security token mismatch. Please try again.');
             $this->redirect($_SERVER['HTTP_REFERER'] ?? '/');
         }
     }

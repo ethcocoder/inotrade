@@ -1,12 +1,12 @@
 <?php
 // Application Configuration
 define('APP_NAME', 'Innovation Trading Center');
-define('APP_URL', 'http://localhost/innovation-trading-center');
+define('APP_URL', 'http://localhost:8000');
 define('APP_VERSION', '1.0.0');
 
 // Database Configuration
 define('DB_HOST', '127.0.0.1');
-define('DB_NAME', 'innovation_trading_center');
+define('DB_NAME', 'inotrade');
 define('DB_USER', 'root');
 define('DB_PASS', '');
 

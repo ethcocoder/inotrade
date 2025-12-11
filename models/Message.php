@@ -3,7 +3,7 @@ require_once 'BaseModel.php';
 
 class Message extends BaseModel {
     protected $table = 'messages';
-    protected $fillable = ['sender_id', 'receiver_id', 'receiver_type', 'innovation_id', 'subject', 'body'];
+    protected $fillable = ['sender_id', 'receiver_id', 'innovation_id', 'subject', 'body'];
     
     public function __construct() {
         parent::__construct();

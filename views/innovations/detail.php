@@ -14,6 +14,7 @@
                             <i class="bi bi-pencil"></i> Edit
                         </a>
                         <form action="/innovations/<?= $innovation['id'] ?>/delete" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this innovation?');">
+                            <?= $csrf ?? '' ?>
                             <button type="submit" class="btn btn-danger btn-sm">
                                 <i class="bi bi-trash"></i> Delete
                             </button>

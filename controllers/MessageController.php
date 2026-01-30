@@ -66,6 +66,8 @@ class MessageController extends BaseController {
             $contactOrGroup = $this->user->find($chatId);
             if ($contactOrGroup) {
                 $conversation = $this->message->getConversation($currentUser['id'], $chatId);
+                // Mark all messages from this contact as read
+                $this->message->markConversationAsRead($currentUser['id'], $chatId);
                 // Mark as active in chat list
                 foreach ($conversations as &$c) {
                     if ($c['type'] === 'private' && $c['id'] == $chatId) $c['active'] = true;
@@ -84,6 +86,9 @@ class MessageController extends BaseController {
             }
         }
 
+        // Generate CSRF token if not exists
+        $this->csrf();
+        
         $this->render('messages/inbox', [
             'conversations' => $conversations,
             'currentUser' => $currentUser,
@@ -141,6 +146,7 @@ class MessageController extends BaseController {
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->verifyCsrf();
             $receiverType = $_POST['receiver_type'] ?? ($_GET['type'] ?? 'user');
             $data = [
                 'sender_id' => $currentUser['id'],
@@ -180,7 +186,8 @@ class MessageController extends BaseController {
                 $admins = $this->user->getAdmins();
                 $this->render('messages/send', [
                     'admins' => $admins,
-                    'currentUser' => $currentUser
+                    'currentUser' => $currentUser,
+                    'csrf' => $this->csrfInput()
                 ]);
                 return;
             }
@@ -189,7 +196,8 @@ class MessageController extends BaseController {
                 $users = $this->user->getAll();
                 $this->render('messages/select_user', [
                     'users' => $users,
-                    'currentUser' => $currentUser
+                    'currentUser' => $currentUser,
+                    'csrf' => $this->csrfInput()
                 ]);
                 return;
             }
@@ -201,7 +209,8 @@ class MessageController extends BaseController {
             $this->render('messages/send', [
                 'receiver' => $receiver,
                 'innovation' => $innovation,
-                'currentUser' => $currentUser
+                'currentUser' => $currentUser,
+                'csrf' => $this->csrfInput()
             ]);
         }
     }

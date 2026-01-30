@@ -28,6 +28,7 @@ $formData = $data ?? $innovation ?? [];
                     </div>
                 <?php endif; ?>
                 <form method="POST" action="<?= $formAction ?>" enctype="multipart/form-data" novalidate>
+                    <?= $csrf ?? '' ?>
                     <div class="mb-3">
                         <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" id="title" name="title" required maxlength="255"

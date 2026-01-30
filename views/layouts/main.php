@@ -1,65 +1,114 @@
+<?php
+$isHome = ($_SERVER['REQUEST_URI'] === '/' || $_SERVER['REQUEST_URI'] === '/home');
+$isAuth = (strpos($_SERVER['REQUEST_URI'], '/login') !== false || strpos($_SERVER['REQUEST_URI'], '/register') !== false);
+$isAbout = (strpos($_SERVER['REQUEST_URI'], '/about') !== false);
+$isContact = (strpos($_SERVER['REQUEST_URI'], '/contact') !== false);
+$useGlassNav = $isHome || $isAuth;
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= APP_NAME ?></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/public/assets/css/styles.css?v=<?= time() ?>" rel="stylesheet">
+    <script src="/public/assets/js/theme.js"></script>
     <style>
-        <?php if (!$useGlassNav): ?>
-        body { background: #f8f9fa; }
-        <?php else: ?>
-        body, html { background: transparent !important; }
-        nav.navbar.navbar-glass,
-        nav.navbar.navbar-glass .container-fluid,
-        nav.navbar.navbar-glass .navbar-collapse,
-        nav.navbar.navbar-glass .navbar-nav {
-            background: rgba(255, 255, 255, 0.1) !important;
-            box-shadow: 0 2px 16px 0 rgba(0,0,0,0.10) !important;
-            border-bottom: 1.5px solid rgba(255,255,255,0.13) !important;
+        :root {
+            --font-primary: 'Outfit', sans-serif;
+            --primary-gradient: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+            --secondary-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.3);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        }
+        
+        body {
+            font-family: var(--font-primary);
+            color: #1e293b;
+            background-color: #f1f5f9;
+        }
+
+        <?php if ($useGlassNav): ?>
+        body, html { 
+            background: transparent !important; 
         }
         nav.navbar.navbar-glass {
-            backdrop-filter: blur(12px);
-            
+            background: rgba(255, 255, 255, 0.05) !important;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             position: absolute;
             top: 0; left: 0; right: 0;
             z-index: 1000;
+            padding: 1rem 0;
+            transition: all 0.3s ease;
         }
+        /* Sticky state could be added with JS later */
         <?php endif; ?>
+
         .navbar-brand {
-            font-weight: 900;
-            font-size: 1.45rem;
-            letter-spacing: 0.5px;
-            color: blue;
-            text-shadow: 0 1px 4px rgba(0,0,0,0.12);
+            font-weight: 800;
+            font-size: 1.5rem;
+            letter-spacing: -0.5px;
+            color: #0f172a;
         }
+        
+        <?php if ($useGlassNav): ?>
+        .navbar-brand { color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        <?php endif; ?>
+
         .navbar-nav .nav-link {
-            color: blue ;
             font-weight: 600;
-            margin-left: 0.7rem;
-            margin-right: 0.2rem;
-            transition: color 0.18s, background 0.18s, border 0.18s;
-            border-radius: 1.2rem;
-            padding: 0.35rem 1.1rem;
-            text-shadow: 0 1px 4px rgba(0,0,0,0.12);
+            font-size: 0.95rem;
+            padding: 0.5rem 1rem !important;
+            border-radius: 0.5rem;
+            transition: all 0.2s ease;
+            color: <?php echo $useGlassNav ? 'rgba(255,255,255,0.85)' : '#475569'; ?>;
         }
+
         .navbar-nav .nav-link:hover, .navbar-nav .nav-link:focus {
-            color: #fff !important;
-            background: rgba(0,123,255,0.13);
+            color: <?php echo $useGlassNav ? '#fff' : '#2563eb'; ?> !important;
+            background: <?php echo $useGlassNav ? 'rgba(255,255,255,0.1)' : 'rgba(37,99,235,0.05)'; ?>;
         }
+
         .navbar-nav .nav-link.register-link {
-            background: linear-gradient(90deg, #007bff 0%, #00c6ff 100%);
-            color: #fff !important;
-            font-weight: 700;
-            margin-left: 1.1rem;
-            box-shadow: 0 2px 12px 0 rgba(0,123,255,0.10);
+            background: #fff;
+            color: #2563eb !important;
+            margin-left: 1rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08); /* More subtle shadow */
+            padding: 0.5rem 1.5rem !important;
             border-radius: 2rem;
-            padding: 0.35rem 1.4rem;
         }
-        .navbar-nav .nav-link.register-link:hover, .navbar-nav .nav-link.register-link:focus {
-            background: linear-gradient(90deg, #00c6ff 0%, #007bff 100%);
-            color: #fff !important;
-            box-shadow: 0 4px 24px 0 rgba(0,123,255,0.18);
+        
+        .navbar-nav .nav-link.register-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+            background: #f8fafc;
+        }
+        
+        /* Dropdown enhancements if needed */
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            border-radius: 1rem;
+            padding: 0.5rem;
+        }
+        
+        .dropdown-item {
+            border-radius: 0.5rem;
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+        }
+        
+        .dropdown-item:hover {
+            background-color: #f1f5f9;
+            color: #2563eb;
         }
     </style>
 </head>
@@ -69,21 +118,19 @@
     else if ($isAbout) echo 'about-page';
     else if ($isContact) echo 'contact-page';
 ?>">
-<?php
-$isHome = ($_SERVER['REQUEST_URI'] === '/' || $_SERVER['REQUEST_URI'] === '/home');
-$isAuth = ($_SERVER['REQUEST_URI'] === '/login' || $_SERVER['REQUEST_URI'] === '/register');
-$isAbout = ($_SERVER['REQUEST_URI'] === '/about');
-$isContact = ($_SERVER['REQUEST_URI'] === '/contact');
-$useGlassNav = $isHome || $isAuth;
-?>
-<nav class="navbar navbar-expand-lg <?php echo $useGlassNav ? 'navbar-glass' : 'navbar-dark bg-primary'; ?>">
-    <div class="container-fluid">
+<nav class="navbar navbar-expand-lg <?php echo $useGlassNav ? 'navbar-glass' : 'navbar-light bg-white shadow-sm'; ?>">
+    <div class="container">
         <a class="navbar-brand" href="/home">Innovation Trading Center</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
+            <ul class="navbar-nav ms-auto align-items-center">
+                <li class="nav-item me-2">
+                    <button class="btn btn-link nav-link p-2 d-flex align-items-center" onclick="toggleTheme()" aria-label="Toggle theme">
+                        <i class="bi bi-moon-fill theme-icon fs-5"></i>
+                    </button>
+                </li>
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <li class="nav-item"><a class="nav-link" href="/home">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
@@ -91,17 +138,18 @@ $useGlassNav = $isHome || $isAuth;
                     <li class="nav-item"><a class="nav-link" href="/profile">Profile</a></li>
                     <li class="nav-item"><a class="nav-link" href="/innovations">Innovations</a></li>
                     <li class="nav-item"><a class="nav-link" href="/messages">Messages</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/messages/send?contact_admin=1">Contact Admin</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/messages/send?contact_admin=1">Support</a></li>
                     <?php if ($_SESSION['user_role'] === 'admin'): ?>
                         <li class="nav-item"><a class="nav-link" href="/admin">Admin</a></li>
                     <?php endif; ?>
-                    <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                    <li class="nav-item"><a class="nav-link text-danger" href="/logout">Logout</a></li>
                 <?php else: ?>
                     <li class="nav-item"><a class="nav-link" href="/home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/innovations">Innovations</a></li>
                     <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
                     <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
                     <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
-                    <li class="nav-item"><a class="nav-link register-link" href="/register">Register</a></li>
+                    <li class="nav-item"><a class="nav-link register-link" href="/register">Get Started</a></li>
                 <?php endif; ?>
             </ul>
         </div>
@@ -109,8 +157,8 @@ $useGlassNav = $isHome || $isAuth;
 </nav>
 <?php if ($isHome || $isAuth || $isAbout || $isContact): ?>
     <?php if (isset($_SESSION['flash'])): ?>
-        <div class="container mt-4">
-            <div class="alert alert-<?= $_SESSION['flash']['type'] ?> alert-dismissible fade show" role="alert">
+        <div class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 2000; margin-top: 80px;">
+            <div class="alert alert-<?= $_SESSION['flash']['type'] ?> alert-dismissible fade show shadow-lg border-0 rounded-3" role="alert">
                 <?= htmlspecialchars($_SESSION['flash']['message']) ?>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
@@ -119,9 +167,9 @@ $useGlassNav = $isHome || $isAuth;
     <?php endif; ?>
     <?= $content ?>
 <?php else: ?>
-    <div class="container">
+    <div class="container py-5 mt-5">
         <?php if (isset($_SESSION['flash'])): ?>
-            <div class="alert alert-<?= $_SESSION['flash']['type'] ?> alert-dismissible fade show" role="alert">
+            <div class="alert alert-<?= $_SESSION['flash']['type'] ?> alert-dismissible fade show shadow-sm border-0 rounded-3 mb-4" role="alert">
                 <?= htmlspecialchars($_SESSION['flash']['message']) ?>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
@@ -130,6 +178,11 @@ $useGlassNav = $isHome || $isAuth;
         <?= $content ?>
     </div>
 <?php endif; ?>
+<footer class="py-4 text-center <?php echo $useGlassNav ? 'text-white' : 'text-muted'; ?>" style="font-size: 0.9rem; <?php echo $useGlassNav ? 'background-color: #0f172a;' : ''; ?>">
+    <div class="container">
+        <p class="mb-0 opacity-75">Powered by The CEO of Ethco Coder <span class="fw-bold">Natnael Ermiyas</span></p>
+    </div>
+</footer>
 <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>
 </html> 

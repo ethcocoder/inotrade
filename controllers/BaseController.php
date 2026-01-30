@@ -198,5 +198,34 @@ abstract class BaseController {
             $view === 'profile_edit'
         );
     }
+
+    protected function csrf() {
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
+        return $_SESSION['csrf_token'];
+    }
+
+    protected function csrfInput() {
+        return '<input type="hidden" name="csrf_token" value="' . $this->csrf() . '">';
+    }
+
+    protected function verifyCsrf() {
+        $sessionToken = $_SESSION['csrf_token'] ?? null;
+        $postToken = $_POST['csrf_token'] ?? null;
+        
+        // If no session token exists, generate one (user may have had session expire)
+        if (empty($sessionToken)) {
+            $this->setFlash('error', 'Your session has expired. Please try again.');
+            $this->redirect($_SERVER['HTTP_REFERER'] ?? '/');
+            return;
+        }
+        
+        // If no post token or tokens don't match
+        if (empty($postToken) || !hash_equals($sessionToken, $postToken)) {
+            $this->setFlash('error', 'Security token mismatch. Please try again.');
+            $this->redirect($_SERVER['HTTP_REFERER'] ?? '/');
+        }
+    }
 }
 ?> 

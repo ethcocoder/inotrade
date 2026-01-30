@@ -1,364 +1,205 @@
-<style>
-body, html {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-}
-.hero-bg {
-    position: relative;
-    min-height: 100vh;
-    width: 100vw;
-    background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80') center center/cover no-repeat;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    color: #fff;
-    overflow: hidden;
-    padding: 0;
-    margin: 0;
-}
-.hero-bg::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: rgba(30, 30, 30, 0.55);
-    z-index: 1;
-}
-.hero-glass {
-    position: relative;
-    z-index: 2;
-    max-width: 800px;
-    min-width: 340px;
-    margin-left: 2vw;
-    padding: 4rem 3rem 3rem 3rem;
-    border-radius: 2.5rem;
-    background: linear-gradient(120deg, rgba(255,255,255,0.18) 60%, rgba(0,123,255,0.10) 100%);
-    box-shadow: 0 12px 48px 0 rgba(31, 38, 135, 0.22), 0 0 0 4px rgba(0,123,255,0.08);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    border: 2.5px solid rgba(255,255,255,0.22);
-    animation: fadeInUp 1.2s cubic-bezier(.23,1.01,.32,1) both;
-    overflow: hidden;
-}
-.hero-glass::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 2.5rem;
-    pointer-events: none;
-    background: linear-gradient(120deg, rgba(0,123,255,0.10) 0%, rgba(255,255,255,0.08) 100%);
-    z-index: 0;
-    animation: glassGlow 4s ease-in-out infinite alternate;
-}
-@keyframes glassGlow {
-    from { box-shadow: 0 0 32px 0 rgba(0,123,255,0.10); }
-    to { box-shadow: 0 0 64px 0 rgba(0,123,255,0.18); }
-}
-.hero-glass > * { position: relative; z-index: 1; }
-.hero-glass h1 {
-    font-size: 3.2rem;
-    line-height: 1.1;
-    font-weight: 800;
-    letter-spacing: -1px;
-}
-.hero-glass p.lead {
-    font-size: 1.35rem;
-    margin-bottom: 2.2rem;
-}
-.hero-glass .d-flex.gap-4 > div .h4 {
-    font-size: 2rem;
-}
-.hero-glass .d-flex.gap-4 > div .small {
-    font-size: 1.1rem;
-    opacity: 0.85;
-}
-@media (max-width: 900px) {
-    .hero-3d { display: none; }
-    .hero-glass { margin-left: 0; max-width: 98vw; padding: 2.2rem 1.2rem; }
-    .hero-glass h1 { font-size: 2.1rem; }
-}
-.hero-btn {
-    transition: all 0.25s cubic-bezier(.4,0,.2,1);
-    box-shadow: 0 2px 12px 0 rgba(0,123,255,0.10);
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    border-radius: 2rem;
-    padding-left: 2rem;
-    padding-right: 2rem;
-    font-size: 1.15rem;
-}
-.hero-btn-primary {
-    background: linear-gradient(90deg, #007bff 0%, #00c6ff 100%);
-    color: #fff;
-    border: none;
-}
-.hero-btn-primary:hover, .hero-btn-primary:focus {
-    background: linear-gradient(90deg, #00c6ff 0%, #007bff 100%);
-    color: #fff;
-    transform: translateY(-2px) scale(1.04) rotate(-1deg);
-    box-shadow: 0 4px 24px 0 rgba(0,123,255,0.18);
-}
-.hero-btn-outline {
-    background: rgba(255,255,255,0.08);
-    color: #fff;
-    border: 2px solid #fff;
-}
-.hero-btn-outline:hover, .hero-btn-outline:focus {
-    background: #fff;
-    color: #007bff;
-    border-color: #007bff;
-    transform: translateY(-2px) scale(1.04) rotate(1deg);
-    box-shadow: 0 4px 24px 0 rgba(0,123,255,0.10);
-}
-.features-section {
-    background: linear-gradient(120deg, #f8f9fa 60%, #e3f0ff 100%);
-    padding: 4rem 0 2.5rem 0;
-}
-.feature-card {
-    border-radius: 1.5rem;
-    box-shadow: 0 4px 24px 0 rgba(0,123,255,0.07);
-    transition: transform 0.25s cubic-bezier(.4,0,.2,1), box-shadow 0.25s;
-    background: #fff;
-    border: none;
-    position: relative;
-    overflow: hidden;
-}
-.feature-card:hover {
-    transform: translateY(-8px) scale(1.03);
-    box-shadow: 0 8px 32px 0 rgba(0,123,255,0.13);
-}
-.feature-icon {
-    font-size: 2.8rem;
-    margin-bottom: 1rem;
-    display: inline-block;
-    background: linear-gradient(90deg, #007bff 0%, #00c6ff 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-.stats-section {
-    background: #fff;
-    padding: 3rem 0 2rem 0;
-}
-.stat-card {
-    border-radius: 1.2rem;
-    background: #f8faff;
-    box-shadow: 0 2px 12px 0 rgba(0,123,255,0.06);
-    padding: 2rem 1rem 1.5rem 1rem;
-    margin: 0 0.5rem;
-    min-width: 160px;
-}
-.stat-number {
-    font-size: 2.8rem;
-    font-weight: 800;
-    margin-bottom: 0.3rem;
-    letter-spacing: -1px;
-    line-height: 1.1;
-    display: block;
-}
-.stat-label {
-    font-size: 1.1rem;
-    color: #6c757d;
-    font-weight: 500;
-}
-.cta-section {
-    position: relative;
-    background: linear-gradient(90deg, #007bff 0%, #00c6ff 100%);
-    color: #fff;
-    padding: 4rem 0 3rem 0;
-    overflow: hidden;
-    text-align: center;
-}
-.cta-section h4 {
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-}
-.cta-section .btn {
-    font-size: 1.25rem;
-    padding: 0.9rem 2.5rem;
-    border-radius: 2rem;
-    font-weight: 600;
-    box-shadow: 0 2px 16px 0 rgba(0,0,0,0.10);
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-.cta-section .btn:hover {
-    transform: scale(1.06) translateY(-2px);
-    box-shadow: 0 8px 32px 0 rgba(0,123,255,0.18);
-}
-.cta-wave {
-    position: absolute;
-    left: 0; right: 0; bottom: 0;
-    width: 100%;
-    height: 60px;
-    z-index: 1;
-}
-@media (max-width: 900px) {
-    .features-section { padding: 2.2rem 0 1.2rem 0; }
-    .stats-section { padding: 1.5rem 0 1rem 0; }
-    .cta-section { padding: 2.2rem 0 1.5rem 0; }
-    .stat-card { min-width: 120px; padding: 1.2rem 0.5rem 1rem 0.5rem; }
-}
-</style>
-
-<div class="hero-bg">
-    <div class="hero-glass">
-        <div class="mb-2 text-uppercase small fw-bold" style="letter-spacing:2px;opacity:0.8;">01 / Welcome</div>
-        <h1 class="display-3 fw-bold mb-3">Back to Innovation</h1>
-        <p class="lead mb-4">Change the way you experience innovation in Ethiopia. Discover, connect, and grow with the Innovation Trading Center Platform.</p>
-        <div class="d-flex flex-wrap gap-3 mb-4">
-            <a href="/register" class="btn hero-btn hero-btn-primary btn-lg shadow">Get Started</a>
-            <a href="/innovations" class="btn hero-btn hero-btn-outline btn-lg">Browse Innovations</a>
-        </div>
-        <div class="d-flex gap-4">
-            <div>
-                <div class="fw-bold h4 mb-0">120+</div>
-                <div class="small text-light">Innovations</div>
-            </div>
-            <div>
-                <div class="fw-bold h4 mb-0">80+</div>
-                <div class="small text-light">Sponsors</div>
-            </div>
-            <div>
-                <div class="fw-bold h4 mb-0">300+</div>
-                <div class="small text-light">Connections</div>
-            </div>
-        </div>
+<!-- Hero Section -->
+<div class="position-relative overflow-hidden p-0 m-0">
+    <div class="position-absolute top-0 start-0 w-100 h-100" 
+         style="background: url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1920&q=80') center center/cover no-repeat; z-index: -1;">
+        <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(15, 23, 42, 0.7) 100%);"></div>
     </div>
-    <!-- 3D Placeholder (SVG) -->
-    <div class="hero-3d">
-        <svg viewBox="0 0 200 200" width="100%" height="100%">
-            <defs>
-                <radialGradient id="grad" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stop-color="#fff" stop-opacity="0.8"/>
-                    <stop offset="100%" stop-color="#007bff" stop-opacity="0.7"/>
-                </radialGradient>
-            </defs>
-            <ellipse cx="100" cy="120" rx="80" ry="40" fill="url(#grad)"/>
-            <circle cx="100" cy="80" r="60" fill="#fff" fill-opacity="0.15"/>
-            <circle cx="100" cy="80" r="50" fill="url(#grad)"/>
-            <ellipse cx="100" cy="60" rx="30" ry="12" fill="#fff" fill-opacity="0.3"/>
-        </svg>
+    
+    <div class="container position-relative" style="padding-top: 8rem; padding-bottom: 6rem;">
+        <div class="row align-items-center">
+            <div class="col-lg-7 text-white" style="z-index: 2;">
+                <div class="d-inline-flex align-items-center px-3 py-1 rounded-pill border border-light border-opacity-25 bg-white bg-opacity-10 mb-4 backdrop-blur-sm">
+                    <span class="badge bg-primary me-2 rounded-pill">New</span>
+                    <span class="small fw-medium tracking-wide">The Future of Ethiopian Innovation</span>
+                </div>
+                
+                <h1 class="display-3 fw-extrabold mb-4 lh-tight tracking-tight animate-fade-up">
+                    Where Ideas Meet <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400" style="-webkit-background-clip: text; -webkit-text-fill-color: transparent; background-image: linear-gradient(90deg, #60a5fa, #818cf8);">Opportunity</span>
+                </h1>
+                
+                <p class="lead mb-5 text-gray-300 fs-4 fw-light opacity-75 animate-fade-up animate-delay-100" style="max-width: 600px;">
+                    Connect with Ethiopia's brightest minds. The Innovation Trading Center Platform bridges the gap between visionary innovators and global sponsors.
+                </p>
+                
+                <div class="d-flex flex-wrap gap-3 animate-fade-up animate-delay-200">
+                    <a href="/register" class="btn btn-primary btn-lg rounded-pill px-5 py-3 fs-5 fw-bold shadow-lg shadow-blue-500/50">
+                        Get Started
+                    </a>
+                    <a href="/innovations" class="btn btn-outline-light btn-lg rounded-pill px-5 py-3 fs-5 fw-bold backdrop-blur-sm">
+                        Explore Innovations
+                    </a>
+                </div>
+                
+                <div class="row mt-5 pt-4 border-top border-white border-opacity-10 g-4">
+                    <div class="col-auto">
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="display-6 fw-bold">120+</div>
+                            <div class="small opacity-75 lh-sm">Active<br>Innovations</div>
+                        </div>
+                    </div>
+                    <div class="col-auto border-start border-white border-opacity-10 ps-4">
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="display-6 fw-bold">80+</div>
+                            <div class="small opacity-75 lh-sm">Verified<br>Sponsors</div>
+                        </div>
+                    </div>
+                    <div class="col-auto border-start border-white border-opacity-10 ps-4">
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="display-6 fw-bold">$2M+</div>
+                            <div class="small opacity-75 lh-sm">Capital<br>Raised</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-5 d-none d-lg-block position-relative">
+                <!-- Abstract 3D Glass Element -->
+                <div class="position-absolute top-50 start-50 translate-middle" style="width: 600px; height: 600px; background: radial-gradient(circle, rgba(37,99,235,0.2) 0%, rgba(37,99,235,0) 70%); filter: blur(60px); z-index: 0;"></div>
+                
+                <div class="card border-0 bg-white bg-opacity-10 backdrop-blur-md shadow-xl border border-white border-opacity-20 rounded-4 p-4 position-relative" style="transform: rotate(-2deg); z-index: 1;">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="rounded-circle bg-white bg-opacity-20 p-2 me-3">
+                            <i class="bi bi-cpu text-white fs-4"></i>
+                        </div>
+                        <div>
+                            <h5 class="text-white mb-0 fw-bold">Smart AgriTech Solution</h5>
+                            <small class="text-white text-opacity-75">Addis Ababa, Ethiopia</small>
+                        </div>
+                        <span class="badge bg-success ms-auto rounded-pill">Trending</span>
+                    </div>
+                    <div class="rounded-3 overflow-hidden mb-3 position-relative">
+                        <img src="https://images.unsplash.com/photo-1625246333195-f8196ba00aca?auto=format&fit=crop&w=800&q=80" alt="Innovation" class="img-fluid">
+                        <div class="position-absolute bottom-0 start-0 w-100 p-3 bg-gradient-to-t from-black/80 to-transparent">
+                            <div class="d-flex justify-content-between align-items-end">
+                                <div>
+                                    <small class="text-white text-opacity-75 d-block mb-1">Funding Goal</small>
+                                    <div class="text-white fw-bold">ETB 1,500,000</div>
+                                </div>
+                                <div class="text-end">
+                                    <small class="text-white text-opacity-75 d-block mb-1">Raised</small>
+                                    <div class="text-success fw-bold">85%</div>
+                                </div>
+                            </div>
+                            <div class="progress mt-2" style="height: 6px; background: rgba(255,255,255,0.2);">
+                                <div class="progress-bar bg-success" role="progressbar" style="width: 85%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-grid">
+                        <button class="btn btn-primary rounded-pill">Sponsor Now</button>
+                    </div>
+                </div>
+                
+                <!-- Floating Elements -->
+                <div class="card position-absolute top-0 end-0 p-3 bg-white shadow-lg border-0 rounded-4 animate-float" style="width: 180px; transform: translate(20%, -20%); animation: float 6s ease-in-out infinite;">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-circle bg-green-100 p-2 text-success">
+                            <i class="bi bi-graph-up-arrow fs-5"></i>
+                        </div>
+                        <div>
+                            <div class="fw-bold text-dark fs-5">+127%</div>
+                            <small class="text-muted" style="font-size: 0.75rem;">Growth Rate</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
 <!-- Features Section -->
-<div class="features-section">
-    <div class="container">
-        <div class="row text-center">
-            <div class="col-md-4 mb-4">
-                <div class="card feature-card h-100">
-                    <div class="card-body">
-                        <span class="feature-icon"><i class="bi bi-lightbulb"></i></span>
-                        <h5 class="card-title fw-bold">For Innovators</h5>
-                        <p class="card-text">Showcase your ideas, connect with sponsors, and access resources to bring your innovations to life.</p>
+<div class="py-5 bg-light">
+    <div class="container py-5">
+        <div class="text-center mb-5">
+            <small class="text-primary fw-bold text-uppercase tracking-wider">How It Works</small>
+            <h2 class="display-5 fw-bold mt-2 mb-3">Empowering The Ecosystem</h2>
+            <p class="lead text-muted mx-auto" style="max-width: 600px;">
+                Our platform provides the essential tools and connections needed to turn groundbreaking ideas into varied realities.
+            </p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm hover-shadow-lg transition-all p-4 text-center">
+                    <div class="rounded-circle bg-blue-50 mx-auto mb-4 d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                        <i class="bi bi-lightbulb text-primary fs-1"></i>
                     </div>
+                    <h4 class="fw-bold mb-3">Innovators</h4>
+                    <p class="text-muted mb-4">
+                        Submit your projects, showcase your prototypes, and gain visibility among a network of potential investors.
+                    </p>
+                    <a href="/register" class="text-primary fw-bold text-decoration-none">Learn More <i class="bi bi-arrow-right"></i></a>
                 </div>
             </div>
-            <div class="col-md-4 mb-4">
-                <div class="card feature-card h-100">
-                    <div class="card-body">
-                        <span class="feature-icon"><i class="bi bi-people"></i></span>
-                        <h5 class="card-title fw-bold">For Sponsors</h5>
-                        <p class="card-text">Discover promising projects, support Ethiopian talent, and invest in the future of innovation.</p>
+            
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm hover-shadow-lg transition-all p-4 text-center">
+                    <div class="rounded-circle bg-indigo-50 mx-auto mb-4 d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                        <i class="bi bi-briefcase text-primary fs-1"></i>
                     </div>
+                    <h4 class="fw-bold mb-3">Sponsors</h4>
+                    <p class="text-muted mb-4">
+                        Discover vetted opportunities, track your investments impact, and contribute to Ethiopia's technological growth.
+                    </p>
+                    <a href="/register" class="text-primary fw-bold text-decoration-none">Start Investing <i class="bi bi-arrow-right"></i></a>
                 </div>
             </div>
-            <div class="col-md-4 mb-4">
-                <div class="card feature-card h-100">
-                    <div class="card-body">
-                        <span class="feature-icon"><i class="bi bi-chat-dots"></i></span>
-                        <h5 class="card-title fw-bold">Connect & Collaborate</h5>
-                        <p class="card-text">Message, network, and collaborate with innovators, sponsors, and the admin team in one place.</p>
+            
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm hover-shadow-lg transition-all p-4 text-center">
+                    <div class="rounded-circle bg-purple-50 mx-auto mb-4 d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                        <i class="bi bi-people text-primary fs-1"></i>
                     </div>
+                    <h4 class="fw-bold mb-3">Collaboration</h4>
+                    <p class="text-muted mb-4">
+                        Engage in meaningful dialogue through our messaging system, foster partnerships, and build lasting connections.
+                    </p>
+                    <a href="/about" class="text-primary fw-bold text-decoration-none">About Us <i class="bi bi-arrow-right"></i></a>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Stats Section -->
-<div class="stats-section">
-    <div class="container">
-        <div class="row justify-content-center text-center">
-            <div class="col-6 col-md-3 mb-3">
-                <div class="stat-card">
-                    <span class="stat-number text-primary" id="stat-innovations">120+</span>
-                    <div class="stat-label">Innovations</div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3 mb-3">
-                <div class="stat-card">
-                    <span class="stat-number text-success" id="stat-sponsors">80+</span>
-                    <div class="stat-label">Sponsors</div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3 mb-3">
-                <div class="stat-card">
-                    <span class="stat-number text-info" id="stat-connections">300+</span>
-                    <div class="stat-label">Connections</div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3 mb-3">
-                <div class="stat-card">
-                    <span class="stat-number text-warning" id="stat-support">24/7</span>
-                    <div class="stat-label">Support</div>
-                </div>
-            </div>
-        </div>
+<!-- CTA Section -->
+<div class="py-5 text-white position-relative overflow-hidden" 
+     style="background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);">
+    <div class="position-absolute top-0 start-0 w-100 h-100 opacity-10" 
+         style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+    <div class="container py-5 position-relative z-index-1 text-center">
+        <h2 class="display-4 fw-bold mb-4">Ready to Make an Impact?</h2>
+        <p class="lead mb-5 opacity-90 mx-auto" style="max-width: 700px;">
+            Join over 500+ members who are already shaping the future. Whether you have an idea or the means to support one, your journey starts here.
+        </p>
+        <a href="/register" class="btn btn-light text-primary btn-lg rounded-pill px-5 py-3 fw-bold shadow-lg">
+            Join the Platform
+        </a>
     </div>
 </div>
 
-<!-- Call to Action Banner -->
-<div class="cta-section">
-    <div class="container position-relative" style="z-index:2;">
-        <h4 class="mb-3">Ready to join Ethiopia's innovation movement?</h4>
-        <a href="/register" class="btn btn-light btn-lg">Create Your Free Account</a>
-    </div>
-    <svg class="cta-wave" viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill="#fff" fill-opacity="1" d="M0,32L48,37.3C96,43,192,53,288,58.7C384,64,480,64,576,53.3C672,43,768,21,864,16C960,11,1056,21,1152,32C1248,43,1344,53,1392,58.7L1440,64L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z"></path></svg>
-</div>
-
-<!-- Footer -->
-<footer class="container py-4 text-center text-muted small">
-    &copy; <?= date('Y') ?> Innovation Trading Center Platform. All rights reserved.
-</footer>
-
-<script>
-// Animate headline and subheadline
-window.addEventListener('DOMContentLoaded', function() {
-    document.querySelector('.hero-glass h1').style.opacity = 0;
-    document.querySelector('.hero-glass p').style.opacity = 0;
-    setTimeout(function() {
-        document.querySelector('.hero-glass h1').style.transition = 'opacity 1s';
-        document.querySelector('.hero-glass h1').style.opacity = 1;
-    }, 300);
-    setTimeout(function() {
-        document.querySelector('.hero-glass p').style.transition = 'opacity 1s';
-        document.querySelector('.hero-glass p').style.opacity = 1;
-    }, 800);
-
-    // Animated count-up for stats
-    function animateCount(id, target, duration) {
-        var el = document.getElementById(id);
-        if (!el) return;
-        var start = 0;
-        var startTime = null;
-        function step(timestamp) {
-            if (!startTime) startTime = timestamp;
-            var progress = Math.min((timestamp - startTime) / duration, 1);
-            var value = Math.floor(progress * target);
-            el.textContent = value + (id === 'stat-support' ? '/7' : '+');
-            if (progress < 1) {
-                requestAnimationFrame(step);
-            } else {
-                el.textContent = target + (id === 'stat-support' ? '/7' : '+');
-            }
-        }
-        requestAnimationFrame(step);
-    }
-    animateCount('stat-innovations', 120, 1200);
-    animateCount('stat-sponsors', 80, 1200);
-    animateCount('stat-connections', 300, 1200);
-    // Support is static
-});
-</script> 
+<style>
+@keyframes float {
+    0% { transform: translate(20%, -20%) translateY(0px); }
+    50% { transform: translate(20%, -20%) translateY(-15px); }
+    100% { transform: translate(20%, -20%) translateY(0px); }
+}
+@keyframes fade-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up {
+    animation: fade-up 0.8s ease-out forwards;
+    opacity: 0; /* Start hidden */
+}
+.animate-delay-100 { animation-delay: 0.1s; }
+.animate-delay-200 { animation-delay: 0.2s; }
+.animate-delay-300 { animation-delay: 0.3s; }
+.hover-shadow-lg:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+}
+.transition-all {
+    transition: all 0.3s ease;
+}
+</style>

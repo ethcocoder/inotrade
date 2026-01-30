@@ -27,13 +27,16 @@ class AdminController extends BaseController {
         $role = $_GET['role'] ?? '';
         $status = $_GET['status'] ?? '';
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-        $users = $this->user->getAllWithFilters($search, $role, $status, $page);
+        $result = $this->user->getAllWithFilters($search, $role, $status, $page);
         $currentUser = $this->getCurrentUser();
         $this->render('dashboard/admin_users', [
-            'users' => $users,
-            'search' => $search,
-            'role' => $role,
-            'status' => $status,
+            'users' => $result['data'] ?? [],  // Pass just the data array
+            'pagination' => $result,            // Pass full result for pagination
+            'filters' => [                      // Pass filters for form
+                'search' => $search,
+                'role' => $role,
+                'status' => $status
+            ],
             'currentUser' => $currentUser
         ]);
     }
@@ -51,15 +54,49 @@ class AdminController extends BaseController {
         ]);
     }
 
-    // User management: activate/deactivate
-    public function userToggleStatus($id = null) {
+    // User management: edit user
+    public function userEdit($id = null) {
         if (!$id) $id = $_GET['id'] ?? null;
         if (!$id) $this->redirect('/admin/users');
         $user = $this->user->find($id);
         if (!$user) $this->redirect('/admin/users');
-        $newStatus = $user['status'] === 'active' ? 'inactive' : 'active';
-        $this->user->update($id, ['status' => $newStatus]);
-        $this->setFlash('success', 'User status updated.');
+        
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = [
+                'name' => trim($_POST['name'] ?? ''),
+                'email' => trim($_POST['email'] ?? ''),
+                'role' => $_POST['role'] ?? $user['role'],
+                'organization' => trim($_POST['organization'] ?? ''),
+                'bio' => trim($_POST['bio'] ?? ''),
+            ];
+            $this->user->update($id, $data);
+            $this->setFlash('success', 'User updated successfully.');
+            $this->redirect('/admin/users');
+        }
+        
+        $currentUser = $this->getCurrentUser();
+        $this->render('dashboard/admin_user_edit', [
+            'user' => $user,
+            'currentUser' => $currentUser,
+            'csrf' => $this->csrfInput()
+        ]);
+    }
+
+    // User management: activate user
+    public function userActivate($id = null) {
+        if (!$id) $id = $_GET['id'] ?? null;
+        if (!$id) $this->redirect('/admin/users');
+        $this->user->update($id, ['is_active' => 1]);
+        $this->setFlash('success', 'User activated successfully.');
+        $this->redirect('/admin/users');
+    }
+
+    // User management: deactivate user
+    public function userDeactivate($id = null) {
+        if (!$id) $id = $_GET['id'] ?? null;
+        if (!$id) $this->redirect('/admin/users');
+        $this->user->update($id, ['is_active' => 0]);
+        $this->setFlash('success', 'User deactivated successfully.');
         $this->redirect('/admin/users');
     }
 
@@ -77,25 +114,33 @@ class AdminController extends BaseController {
         $search = $_GET['search'] ?? '';
         $status = $_GET['status'] ?? '';
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-        $innovations = $this->innovation->getAllWithAdminFilters($search, $status, $page);
+        $result = $this->innovation->getAllWithAdminFilters($search, $status, $page);
         $currentUser = $this->getCurrentUser();
         $this->render('dashboard/admin_innovations', [
-            'innovations' => $innovations,
-            'search' => $search,
-            'status' => $status,
+            'innovations' => $result['data'] ?? [],  // Pass just the data array
+            'pagination' => $result,
+            'filters' => [
+                'search' => $search,
+                'status' => $status
+            ],
             'currentUser' => $currentUser
         ]);
     }
 
-    // Innovation management: approve/reject
+    // Innovation management: publish/unpublish
     public function innovationToggleStatus($id = null) {
         if (!$id) $id = $_GET['id'] ?? null;
         if (!$id) $this->redirect('/admin/innovations');
+        
         $innovation = $this->innovation->find($id);
         if (!$innovation) $this->redirect('/admin/innovations');
-        $newStatus = $innovation['status'] === 'approved' ? 'rejected' : 'approved';
+        
+        // Toggle status: if currently published (or funded/completed), unpublish to draft.
+        // If draft, publish.
+        $newStatus = ($innovation['status'] === 'draft') ? 'published' : 'draft';
+        
         $this->innovation->update($id, ['status' => $newStatus]);
-        $this->setFlash('success', 'Innovation status updated.');
+        $this->setFlash('success', 'Innovation status updated to ' . ucfirst($newStatus) . '.');
         $this->redirect('/admin/innovations');
     }
 
@@ -111,12 +156,24 @@ class AdminController extends BaseController {
     // Message management: list/search/filter
     public function messages() {
         $search = $_GET['search'] ?? '';
+        $status = $_GET['status'] ?? '';
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-        $messages = $this->message->getAllWithAdminFilters($search, $page);
+        
+        $result = $this->message->getAllWithAdminFilters($search, $page);
+        
+        // Filter by status manually if needed, or update model to support it
+        // Note: getAllWithAdminFilters currently only supports search. 
+        // If status filter is needed, we should update the model. 
+        // For now, let's just pass the data.
+        
         $currentUser = $this->getCurrentUser();
         $this->render('dashboard/admin_messages', [
-            'messages' => $messages,
-            'search' => $search,
+            'messages' => $result['data'] ?? [],
+            'pagination' => $result,
+            'filters' => [
+                'search' => $search,
+                'status' => $status
+            ],
             'currentUser' => $currentUser
         ]);
     }
@@ -143,5 +200,32 @@ class AdminController extends BaseController {
         $this->message->delete($id);
         $this->setFlash('success', 'Message deleted.');
         $this->redirect('/admin/messages');
+    }
+
+    // Contact Messages (Public Inquiries)
+    public function contactMessages() {
+        require_once __DIR__ . '/../models/ContactMessage.php';
+        $model = new ContactMessage();
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $pagination = $model->paginate($page, 20);
+        
+        $currentUser = $this->getCurrentUser();
+        $this->render('dashboard/admin_contact_messages', [
+            'messages' => $pagination['data'],
+            'pagination' => $pagination,
+            'currentUser' => $currentUser
+        ]);
+    }
+
+    public function contactMessageDelete($id = null) {
+        if (!$id) $id = $_GET['id'] ?? null;
+        if (!$id) $this->redirect('/admin/contact-messages');
+        
+        require_once __DIR__ . '/../models/ContactMessage.php';
+        $model = new ContactMessage();
+        $model->delete($id);
+        
+        $this->setFlash('success', 'Contact message deleted.');
+        $this->redirect('/admin/contact-messages');
     }
 } 

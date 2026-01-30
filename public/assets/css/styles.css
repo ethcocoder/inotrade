@@ -1,0 +1,454 @@
+:root {
+    --font-primary: 'Outfit', sans-serif;
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --secondary: #0f172a;
+    --accent: #f59e0b;
+    --success: #10b981;
+    --danger: #ef4444;
+
+    /* Light Mode Variables */
+    --bg-body: #f1f5f9;
+    --bg-card: #ffffff;
+    --bg-header: #ffffff;
+    --text-body: #1e293b;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    --input-bg: #ffffff;
+
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+    --radius-sm: 0.375rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.5rem;
+}
+
+[data-theme="dark"] {
+    --bg-body: #0f172a;
+    --bg-card: #1e293b;
+    --bg-header: #1e293b;
+    --text-body: #f8fafc;
+    --text-muted: #94a3b8;
+    --border-color: #334155;
+    --input-bg: #1e293b;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3);
+}
+
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5,
+[data-theme="dark"] h6 {
+    color: var(--text-body);
+}
+
+body {
+    font-family: var(--font-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: var(--bg-body);
+    color: var(--text-body);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Card Styles */
+.card {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: var(--bg-card);
+    overflow: hidden;
+}
+
+.card:hover {
+    box-shadow: var(--shadow-xl);
+    transform: translateY(-4px);
+}
+
+.card-header {
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border-color);
+    padding: 1.5rem;
+    font-weight: 600;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* Buttons */
+.btn {
+    border-radius: 0.5rem;
+    font-weight: 600;
+    padding: 0.625rem 1.25rem;
+    transition: all 0.2s;
+    letter-spacing: 0.01em;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.1), 0 2px 4px -1px rgba(37, 99, 235, 0.06);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.1), 0 4px 6px -2px rgba(37, 99, 235, 0.05);
+}
+
+.btn-outline-primary {
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary);
+    color: #fff;
+}
+
+/* Form Controls */
+.form-control,
+.form-select {
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    background-color: var(--input-bg);
+    color: var(--text-body);
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary);
+    background-color: var(--input-bg);
+    color: var(--text-body);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.form-label {
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+}
+
+/* Auth Pages Backgrounds */
+.login-bg,
+.register-bg {
+    background: url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1920&q=80') center center/cover no-repeat;
+    background-color: #0f172a;
+    position: relative;
+    z-index: 0;
+}
+
+.login-bg::after,
+.register-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(15, 23, 42, 0.7) 100%);
+    z-index: -1;
+}
+
+.login-card,
+.register-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    border-radius: var(--radius-xl);
+}
+
+.login-card h3,
+.register-card h3 {
+    color: #fff;
+    font-weight: 700;
+}
+
+.login-card label,
+.register-card label {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.login-card .form-control,
+.register-card .form-control,
+.register-card .form-select {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #1e293b;
+    /* Always dark text on light glass input */
+}
+
+.login-card .form-control:focus,
+.register-card .form-control:focus,
+.register-card .form-select:focus {
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1);
+    color: #1e293b;
+}
+
+/* Dashboard styles */
+.dashboard-sidebar {
+    background: #0f172a;
+    /* Always dark sidebar */
+    border-right: 1px solid #1e293b;
+    width: 280px;
+    flex-shrink: 0;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    overflow-y: auto;
+}
+
+.dashboard-sidebar .nav-link {
+    color: #94a3b8;
+    font-weight: 500;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.25rem;
+    border-radius: var(--radius-md);
+}
+
+.dashboard-sidebar .nav-link:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+}
+
+.dashboard-sidebar .nav-link.active {
+    background: var(--primary);
+    color: #fff;
+    box-shadow: var(--shadow-md);
+}
+
+.dashboard-sidebar h4 {
+    padding: 0.5rem 1rem 1.5rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: #fff;
+    border-bottom: 1px solid #1e293b;
+    margin-bottom: 1rem;
+    margin-left: -1rem;
+    margin-right: -1rem;
+}
+
+/* Dark Mode Overrides for Bootstrap Classes */
+[data-theme="dark"] .bg-white {
+    background-color: var(--bg-card) !important;
+    color: var(--text-body) !important;
+}
+
+[data-theme="dark"] .bg-light {
+    background-color: var(--input-bg) !important;
+}
+
+[data-theme="dark"] .text-dark {
+    color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] .text-muted {
+    color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .border {
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .navbar-light .navbar-brand {
+    color: #fff !important;
+}
+
+[data-theme="dark"] .navbar-light .nav-link {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+[data-theme="dark"] .navbar-light .nav-link:hover {
+    color: #fff !important;
+}
+
+[data-theme="dark"] .dashboard-header {
+    background-color: var(--bg-header);
+    border-bottom-color: var(--border-color);
+}
+
+[data-theme="dark"] .dashboard-header h4 {
+    color: #fff;
+}
+
+[data-theme="dark"] .header-icon-btn {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: var(--border-color);
+    color: #fff;
+}
+
+[data-theme="dark"] .header-search input {
+    background-color: var(--input-bg);
+    border-color: var(--border-color);
+    color: var(--text-body);
+}
+
+[data-theme="dark"] .dropdown-menu {
+    background-color: var(--bg-card);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .dropdown-item {
+    color: var(--text-body);
+}
+
+[data-theme="dark"] .dropdown-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .navbar-light .navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .navbar-light .navbar-toggler-icon {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* Badges */
+.badge {
+    padding: 0.35em 0.65em;
+    font-weight: 600;
+    border-radius: 9999px;
+}
+
+.badge.bg-primary {
+    background-color: rgba(37, 99, 235, 0.1) !important;
+    color: var(--primary);
+    border: 1px solid rgba(37, 99, 235, 0.2);
+}
+
+.badge.bg-secondary {
+    background-color: rgba(100, 116, 139, 0.1) !important;
+    color: #64748b;
+    border: 1px solid rgba(100, 116, 139, 0.2);
+}
+
+[data-theme="dark"] .badge.bg-secondary {
+    color: #94a3b8;
+    border-color: rgba(148, 163, 184, 0.2);
+}
+
+.badge.bg-success {
+    background-color: rgba(16, 185, 129, 0.1) !important;
+    color: var(--success);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+/* Typography utilities */
+.text-gradient {
+    background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.fw-bold {
+    font-weight: 700 !important;
+}
+
+.fw-extrabold {
+    font-weight: 800 !important;
+}
+
+/* Dark Mode Color Adjustments for Accessibility */
+[data-theme="dark"] .btn-outline-primary {
+    color: #60a5fa;
+    border-color: #60a5fa;
+}
+
+[data-theme="dark"] .btn-outline-primary:hover {
+    background-color: #60a5fa;
+    color: #0f172a;
+}
+
+[data-theme="dark"] .btn-outline-success {
+    color: #34d399;
+    border-color: #34d399;
+}
+
+[data-theme="dark"] .btn-outline-success:hover {
+    background-color: #34d399;
+    color: #0f172a;
+}
+
+[data-theme="dark"] .btn-outline-info {
+    color: #22d3ee;
+    border-color: #22d3ee;
+}
+
+[data-theme="dark"] .btn-outline-info:hover {
+    background-color: #22d3ee;
+    color: #0f172a;
+}
+
+[data-theme="dark"] .text-primary {
+    color: #60a5fa !important;
+}
+
+[data-theme="dark"] .text-success {
+    color: #34d399 !important;
+}
+
+[data-theme="dark"] .text-warning {
+    color: #fbbf24 !important;
+}
+
+[data-theme="dark"] .text-danger {
+    color: #f87171 !important;
+}
+
+[data-theme="dark"] .text-info {
+    color: #22d3ee !important;
+}
+
+/* List Group Dark Mode */
+[data-theme="dark"] .list-group-item {
+    background-color: var(--bg-card);
+    border-color: var(--border-color);
+    color: var(--text-body);
+}
+
+[data-theme="dark"] .list-group-item-action:hover,
+[data-theme="dark"] .list-group-item-action:focus {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--text-body);
+}
+
+/* Feature Icon Backgrounds */
+.bg-blue-50 {
+    background-color: #eff6ff;
+}
+
+.bg-indigo-50 {
+    background-color: #eef2ff;
+}
+
+.bg-purple-50 {
+    background-color: #f5f3ff;
+}
+
+[data-theme="dark"] .bg-blue-50 {
+    background-color: rgba(59, 130, 246, 0.15);
+}
+
+[data-theme="dark"] .bg-indigo-50 {
+    background-color: rgba(99, 102, 241, 0.15);
+}
+
+[data-theme="dark"] .bg-purple-50 {
+    background-color: rgba(139, 92, 246, 0.15);
+}

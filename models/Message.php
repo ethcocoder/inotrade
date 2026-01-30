@@ -3,7 +3,7 @@ require_once 'BaseModel.php';
 
 class Message extends BaseModel {
     protected $table = 'messages';
-    protected $fillable = ['sender_id', 'receiver_id', 'receiver_type', 'innovation_id', 'subject', 'body'];
+    protected $fillable = ['sender_id', 'receiver_id', 'innovation_id', 'subject', 'body'];
     
     public function __construct() {
         parent::__construct();
@@ -105,6 +105,11 @@ class Message extends BaseModel {
         $sql = "SELECT COUNT(*) as count FROM messages WHERE receiver_id = :user_id AND is_read = 0";
         $result = $this->db->fetch($sql, ['user_id' => $userId]);
         return $result['count'];
+    }
+    
+    public function markConversationAsRead($userId, $contactId) {
+        $sql = "UPDATE messages SET is_read = 1 WHERE receiver_id = :user_id AND sender_id = :contact_id AND is_read = 0";
+        return $this->db->query($sql, ['user_id' => $userId, 'contact_id' => $contactId]);
     }
     
     public function getRecentContacts($userId) {
@@ -212,29 +217,32 @@ class Message extends BaseModel {
 
     // Get all group conversations for a user
     public function getGroupConversations($userId) {
-        $sql = "
-            SELECT
-                g.id AS group_id,
-                g.name AS group_name,
-                g.image AS group_image,
-                g.created_at,
-                (
-                    SELECT m.body FROM messages m
-                    WHERE m.receiver_id = g.id AND m.receiver_type = 'group'
-                    ORDER BY m.sent_at DESC LIMIT 1
-                ) AS last_message,
-                (
-                    SELECT m.sent_at FROM messages m
-                    WHERE m.receiver_id = g.id AND m.receiver_type = 'group'
-                    ORDER BY m.sent_at DESC LIMIT 1
-                ) AS last_time,
-                0 AS unread_count -- (optional: implement unread count)
-            FROM groups g
-            JOIN group_members gm ON g.id = gm.group_id
-            WHERE gm.user_id = :user_id
-            ORDER BY last_time DESC, g.created_at DESC
-        ";
-        return $this->db->fetchAll($sql, ['user_id' => $userId]);
+        // Return empty array if groups table doesn't exist (optional feature)
+        try {
+            $checkTable = $this->db->fetch("SHOW TABLES LIKE 'groups'");
+            if (!$checkTable) {
+                return [];
+            }
+            
+            $sql = "
+                SELECT
+                    g.id AS group_id,
+                    g.name AS group_name,
+                    g.image AS group_image,
+                    g.created_at,
+                    NULL AS last_message,
+                    g.created_at AS last_time,
+                    0 AS unread_count
+                FROM groups g
+                JOIN group_members gm ON g.id = gm.group_id
+                WHERE gm.user_id = :user_id
+                ORDER BY g.created_at DESC
+            ";
+            return $this->db->fetchAll($sql, ['user_id' => $userId]);
+        } catch (Exception $e) {
+            // Groups feature not available
+            return [];
+        }
     }
 
     public function create($data) {
@@ -280,12 +288,22 @@ class Message extends BaseModel {
 
     // Get all messages for a group conversation
     public function getGroupConversation($groupId) {
-        $sql = "SELECT m.*, u.name as sender_name, u.profile_image as sender_image
-                FROM messages m
-                JOIN users u ON m.sender_id = u.id
-                WHERE m.receiver_id = :group_id AND m.receiver_type = 'group'
-                ORDER BY m.sent_at ASC";
-        return $this->db->fetchAll($sql, ['group_id' => $groupId]);
+        try {
+            // Check if receiver_type column exists
+            $checkColumn = $this->db->fetch("SHOW COLUMNS FROM messages LIKE 'receiver_type'");
+            if (!$checkColumn) {
+                return [];
+            }
+            
+            $sql = "SELECT m.*, u.name as sender_name, u.profile_image as sender_image
+                    FROM messages m
+                    JOIN users u ON m.sender_id = u.id
+                    WHERE m.receiver_id = :group_id AND m.receiver_type = 'group'
+                    ORDER BY m.sent_at ASC";
+            return $this->db->fetchAll($sql, ['group_id' => $groupId]);
+        } catch (Exception $e) {
+            return [];
+        }
     }
 }
 ?> 

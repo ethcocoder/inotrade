@@ -41,31 +41,67 @@
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($innovations as $inv): ?>
+                <?php if (empty($innovations)): ?>
                     <tr>
-                        <td><?= htmlspecialchars($inv['title']) ?></td>
-                        <td><?= htmlspecialchars($inv['innovator_name']) ?></td>
-                        <td><?= htmlspecialchars($inv['category_name']) ?></td>
-                        <td>
-                            <span class="badge bg-<?= $inv['status'] === 'published' ? 'success' : ($inv['status'] === 'draft' ? 'secondary' : ($inv['status'] === 'funded' ? 'info' : 'dark')) ?>">
-                                <?= ucfirst($inv['status']) ?>
-                            </span>
-                        </td>
-                        <td><?= date('M j, Y', strtotime($inv['created_at'])) ?></td>
-                        <td>
-                            <a href="/innovations/<?= $inv['id'] ?>" class="btn btn-sm btn-outline-info">View</a>
-                            <a href="/admin/innovations/edit/<?= $inv['id'] ?>" class="btn btn-sm btn-outline-warning">Edit</a>
-                            <?php if ($inv['status'] !== 'published'): ?>
-                                <a href="/admin/innovations/approve/<?= $inv['id'] ?>" class="btn btn-sm btn-outline-success">Approve</a>
-                            <?php endif; ?>
-                            <?php if ($inv['status'] === 'published'): ?>
-                                <a href="/admin/innovations/reject/<?= $inv['id'] ?>" class="btn btn-sm btn-outline-secondary">Reject</a>
-                            <?php endif; ?>
-                            <a href="/admin/innovations/delete/<?= $inv['id'] ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this innovation?');">Delete</a>
+                        <td colspan="6" class="text-center py-5 text-muted">
+                            <i class="bi bi-lightbulb display-4 opacity-25 d-block mb-3"></i>
+                            <div>No innovations found matching your criteria.</div>
                         </td>
                     </tr>
-                <?php endforeach; ?>
+                <?php else: ?>
+                    <?php foreach ($innovations as $inv): ?>
+                        <?php if (!is_array($inv) || !isset($inv['id'])) continue; ?>
+                        <tr>
+                            <td><?= htmlspecialchars($inv['title'] ?? '') ?></td>
+                            <td><?= htmlspecialchars($inv['innovator_name'] ?? 'Unknown') ?></td>
+                            <td><?= htmlspecialchars($inv['category_name'] ?? 'Uncategorized') ?></td>
+                            <td>
+                                <?php $status = $inv['status'] ?? 'draft'; ?>
+                                <span class="badge bg-<?= $status === 'published' ? 'success' : ($status === 'draft' ? 'secondary' : ($status === 'funded' ? 'info' : 'dark')) ?>">
+                                    <?= ucfirst($status) ?>
+                                </span>
+                            </td>
+                            <td><?= isset($inv['created_at']) ? date('M j, Y', strtotime($inv['created_at'])) : '-' ?></td>
+                            <td>
+                                <a href="/innovations/<?= $inv['id'] ?>" class="btn btn-sm btn-outline-info">View</a>
+                                <a href="/innovations/<?= $inv['id'] ?>/edit" class="btn btn-sm btn-outline-warning">Edit</a>
+                                <?php if (($inv['status'] ?? '') !== 'published'): ?>
+                                    <a href="/admin/innovations/toggle-status/<?= $inv['id'] ?>" class="btn btn-sm btn-outline-success">Publish</a>
+                                <?php endif; ?>
+                                <?php if (($inv['status'] ?? '') === 'published'): ?>
+                                    <a href="/admin/innovations/toggle-status/<?= $inv['id'] ?>" class="btn btn-sm btn-outline-secondary">Unpublish</a>
+                                <?php endif; ?>
+                                <a href="/admin/innovation/delete?id=<?= $inv['id'] ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this innovation?');">Delete</a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>
+
+    <?php 
+    // Pagination
+    $currentFilters = [];
+    if (!empty($filters['search'])) $currentFilters['search'] = $filters['search'];
+    if (!empty($filters['category'])) $currentFilters['category'] = $filters['category'];
+    if (!empty($filters['status'])) $currentFilters['status'] = $filters['status'];
+    $queryString = http_build_query($currentFilters);
+    ?>
+
+    <?php if (isset($pagination['last_page']) && $pagination['last_page'] > 1): ?>
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                <li class="page-item <?= $pagination['current_page'] <= 1 ? 'disabled' : '' ?>">
+                    <a class="page-link" href="?page=<?= max(1, $pagination['current_page'] - 1) ?>&<?= $queryString ?>">Previous</a>
+                </li>
+                <li class="page-item disabled">
+                    <span class="page-link">Page <?= $pagination['current_page'] ?> of <?= $pagination['last_page'] ?></span>
+                </li>
+                <li class="page-item <?= $pagination['current_page'] >= $pagination['last_page'] ? 'disabled' : '' ?>">
+                    <a class="page-link" href="?page=<?= min($pagination['last_page'], $pagination['current_page'] + 1) ?>&<?= $queryString ?>">Next</a>
+                </li>
+            </ul>
+        </nav>
+    <?php endif; ?>
 </div> 

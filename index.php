@@ -1,7 +1,11 @@
 <?php
 session_start();
 require_once 'config/database.php';
-require_once 'config/config.php';
+if (file_exists('config/config_infinityfree.php')) {
+    require_once 'config/config_infinityfree.php';
+} else {
+    require_once 'config/config.php';
+}
 
 // Simple routing
 $request = $_SERVER['REQUEST_URI'];
@@ -76,6 +80,63 @@ if ($path === '/update-sponsorship-status' && $_SERVER['REQUEST_METHOD'] === 'PO
     require 'controllers/InnovationController.php';
     $controller = new InnovationController();
     $controller->updateSponsorshipStatus();
+    exit;
+}
+
+// Admin User Routes with ID
+if (preg_match('#^/admin/users/view/(\d+)$#', $path, $matches)) {
+    require 'controllers/AdminController.php';
+    $controller = new AdminController();
+    $controller->userView($matches[1]);
+    exit;
+}
+
+if (preg_match('#^/admin/users/edit/(\d+)$#', $path, $matches)) {
+    require 'controllers/AdminController.php';
+    $controller = new AdminController();
+    $controller->userEdit($matches[1]);
+    exit;
+}
+
+if (preg_match('#^/admin/users/activate/(\d+)$#', $path, $matches)) {
+    require 'controllers/AdminController.php';
+    $controller = new AdminController();
+    $controller->userActivate($matches[1]);
+    exit;
+}
+
+if (preg_match('#^/admin/users/deactivate/(\d+)$#', $path, $matches)) {
+    require 'controllers/AdminController.php';
+    $controller = new AdminController();
+    $controller->userDeactivate($matches[1]);
+    exit;
+}
+
+if (preg_match('#^/admin/users/delete/(\d+)$#', $path, $matches)) {
+    require 'controllers/AdminController.php';
+    $controller = new AdminController();
+    $controller->userDelete($matches[1]);
+    exit;
+}
+
+if (preg_match('#^/admin/innovations/toggle-status/(\d+)$#', $path, $matches)) {
+    require 'controllers/AdminController.php';
+    $controller = new AdminController();
+    $controller->innovationToggleStatus($matches[1]);
+    exit;
+}
+
+if (preg_match('#^/admin/messages/delete/(\d+)$#', $path, $matches)) {
+    require 'controllers/AdminController.php';
+    $controller = new AdminController();
+    $controller->messageDelete($matches[1]);
+    exit;
+}
+
+if (preg_match('#^/admin/contact-messages/delete/(\d+)$#', $path, $matches)) {
+    require 'controllers/AdminController.php';
+    $controller = new AdminController();
+    $controller->contactMessageDelete($matches[1]);
     exit;
 }
 
@@ -188,6 +249,11 @@ switch ($path) {
         require 'controllers/AdminController.php';
         $controller = new AdminController();
         $controller->messageDelete();
+        break;
+    case '/admin/contact-messages':
+        require 'controllers/AdminController.php';
+        $controller = new AdminController();
+        $controller->contactMessages();
         break;
     case '/about':
         require_once 'controllers/PageController.php';

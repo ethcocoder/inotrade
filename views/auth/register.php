@@ -1,151 +1,134 @@
-<style>
-body, html {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-}
-.register-bg {
-    min-height: 100vh;
-    width: 100vw;
-    background: url('https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=1200&q=80') center center/cover no-repeat;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-}
-.register-bg::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: rgba(30, 30, 30, 0.55);
-    z-index: 1;
-}
-.register-container {
-    position: relative;
-    z-index: 2;
-    display: flex;
-    width: 100vw;
-    max-width: 1200px;
-    min-height: 700px;
-    background: none;
-    box-shadow: none;
-}
-.register-left {
-    flex: 1 1 0;
-    color: #fff;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 3rem 2.5rem 3rem 3.5rem;
-}
-.register-left h1 {
-    font-size: 2.7rem;
-    font-weight: 800;
-    margin-bottom: 1.2rem;
-    letter-spacing: -1px;
-}
-.register-left p {
-    font-size: 1.15rem;
-    opacity: 0.92;
-    margin-bottom: 2.2rem;
-}
-.register-right {
-    flex: 1 1 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 3rem 3.5rem 3rem 2.5rem;
-}
-.register-card {
-    background: rgba(255,255,255,0.13);
-    border-radius: 1.5rem;
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border: 1.5px solid rgba(255,255,255,0.18);
-    padding: 2.5rem 2rem 2rem 2rem;
-    width: 100%;
-    max-width: 470px;
-    color: #fff;
-    position: relative;
-}
-.register-card label { color: #fff; font-weight: 500; }
-.register-card .form-control, .register-card .form-select { border-radius: 0.7rem; background: rgba(255,255,255,0.85); color: #222; }
-.register-card .form-control:focus, .register-card .form-select:focus { box-shadow: 0 0 0 2px #007bff33; }
-.register-card .form-check-label { color: #fff; }
-.register-card .btn-primary {
-    background: linear-gradient(90deg, #007bff 0%, #00c6ff 100%);
-    border: none;
-    border-radius: 2rem;
-    font-weight: 700;
-    font-size: 1.15rem;
-    padding: 0.7rem 0;
-    margin-top: 0.7rem;
-    box-shadow: 0 2px 12px 0 rgba(0,123,255,0.10);
-    transition: background 0.2s, transform 0.2s;
-}
-.register-card .btn-primary:hover {
-    background: linear-gradient(90deg, #00c6ff 0%, #007bff 100%);
-    transform: translateY(-2px) scale(1.03);
-}
-.register-card .form-text, .register-card .form-link {
-    color: #fff;
-    opacity: 0.85;
-    font-size: 0.97rem;
-}
-.register-card .form-link:hover { color: #007bff; text-decoration: underline; }
-@media (max-width: 900px) {
-    .register-container { flex-direction: column; min-height: 0; max-width: 98vw; }
-    .register-left, .register-right { padding: 2rem 1.2rem; }
-    .register-left h1 { font-size: 2.1rem; }
-}
-</style>
+<div class="register-bg min-vh-100 d-flex align-items-center position-relative py-5">
+    <div class="container position-relative z-index-1">
+        <div class="row align-items-center justify-content-center">
+            <div class="col-lg-5 text-white mb-5 mb-lg-0 pe-lg-5">
+                <div class="d-inline-flex align-items-center px-3 py-1 rounded-pill border border-light border-opacity-25 bg-white bg-opacity-10 mb-4 backdrop-blur-sm">
+                    <span class="badge bg-success me-2 rounded-pill">Join Us</span>
+                    <span class="small fw-medium tracking-wide">Start Your Journey Today</span>
+                </div>
+                <h1 class="display-3 fw-extrabold mb-4 tracking-tight">Create<br>Account</h1>
+                <p class="lead text-gray-200 mb-5 opacity-90 fs-5 fw-light">
+                    Join a community of forward-thinking innovators and investors. Unlock resources, connect with peers, and transform ideas into reality.
+                </p>
+                <div class="d-flex flex-column gap-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-circle bg-white bg-opacity-10 p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                            <i class="bi bi-rocket-takeoff fs-5 text-white"></i>
+                        </div>
+                        <span class="text-white opacity-90">Showcase your innovations globally</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-circle bg-white bg-opacity-10 p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                            <i class="bi bi-shield-check fs-5 text-white"></i>
+                        </div>
+                        <span class="text-white opacity-90">Secure and verified environment</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-circle bg-white bg-opacity-10 p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                            <i class="bi bi-people fs-5 text-white"></i>
+                        </div>
+                        <span class="text-white opacity-90">Network with industry leaders</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-7 col-xl-6">
+                <div class="card register-card border-0 p-4 p-md-5">
+                    <form method="post" action="/register">
+                        <?= $csrf ?? '' ?>
+                        <div class="text-center mb-4">
+                            <h3 class="fw-bold mb-1">Get Started</h3>
+                            <p class="text-white-50 small">Fill in the details to create your account</p>
+                        </div>
+                        
+                        <?php if (isset($errors)): ?>
+                            <div class="alert alert-danger bg-danger bg-opacity-10 border-danger border-opacity-25 text-white mb-4 rounded-3 small">
+                                <ul class="mb-0 ps-3">
+                                    <?php foreach ($errors as $error): ?>
+                                        <li><?= htmlspecialchars($error) ?></li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                        <?php endif; ?>
 
-<div class="register-bg">
-    <div class="register-container">
-        <div class="register-left">
-            <h1>Join the Innovation<br>Trading Center</h1>
-            <p>Create your free account to showcase your innovations, connect with sponsors, and be part of Ethiopia's growing innovation ecosystem. Registration is quick and easy!</p>
-        </div>
-        <div class="register-right">
-            <form class="register-card" method="post" action="/register">
-                <h3 class="mb-4 fw-bold">Create Your Account</h3>
-                <div class="mb-3">
-                    <label for="name" class="form-label">Full Name</label>
-                    <input type="text" class="form-control" id="name" name="name" placeholder="e.g. Selamawit Bekele" required>
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label for="name" class="form-label text-white-50 small text-uppercase tracking-wider">Full Name</label>
+                                <input type="text" name="name" id="name" class="form-control" value="<?= htmlspecialchars($data['name'] ?? '') ?>" required placeholder="John Doe">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="email" class="form-label text-white-50 small text-uppercase tracking-wider">Email Address</label>
+                                <input type="email" name="email" id="email" class="form-control" value="<?= htmlspecialchars($data['email'] ?? '') ?>" required placeholder="name@example.com">
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label for="password" class="form-label text-white-50 small text-uppercase tracking-wider">Password</label>
+                                <div class="input-group">
+                                    <input type="password" name="password" id="password" class="form-control" required placeholder="••••••••">
+                                    <button class="btn btn-light bg-white bg-opacity-90 border-start-0" type="button" onclick="togglePassword('password', this)">
+                                        <i class="bi bi-eye text-muted"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="password_confirm" class="form-label text-white-50 small text-uppercase tracking-wider">Confirm Password</label>
+                                <div class="input-group">
+                                    <input type="password" name="password_confirm" id="password_confirm" class="form-control" required placeholder="••••••••">
+                                    <button class="btn btn-light bg-white bg-opacity-90 border-start-0" type="button" onclick="togglePassword('password_confirm', this)">
+                                        <i class="bi bi-eye text-muted"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="role" class="form-label text-white-50 small text-uppercase tracking-wider">I am a...</label>
+                            <select name="role" id="role" class="form-select">
+                                <option value="innovator" <?= (isset($data['role']) && $data['role'] === 'innovator') ? 'selected' : '' ?>>Innovator - I have ideas to share</option>
+                                <option value="sponsor" <?= (isset($data['role']) && $data['role'] === 'sponsor') ? 'selected' : '' ?>>Sponsor - I want to support projects</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="organization" class="form-label text-white-50 small text-uppercase tracking-wider">Organization <span class="text-white-50 opacity-50">(Optional)</span></label>
+                            <input type="text" name="organization" id="organization" class="form-control" value="<?= htmlspecialchars($data['organization'] ?? '') ?>" placeholder="Company or Institution Name">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="bio" class="form-label text-white-50 small text-uppercase tracking-wider">Bio <span class="text-white-50 opacity-50">(Optional)</span></label>
+                            <textarea name="bio" id="bio" class="form-control" rows="2" placeholder="Tell us a little about yourself..."><?= htmlspecialchars($data['bio'] ?? '') ?></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill fw-bold shadow-lg mb-4">
+                            Create Account
+                        </button>
+                        
+                        <div class="text-center">
+                            <span class="text-white-50 small">Already have an account?</span>
+                            <a href="/login" class="text-white fw-bold text-decoration-none ms-1">Sign In</a>
+                        </div>
+                    </form>
                 </div>
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email Address</label>
-                    <input type="email" class="form-control" id="email" name="email" placeholder="e.g. selamawit@email.com" required>
-                </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="password" name="password" placeholder="Choose a strong password" required>
-                </div>
-                <div class="mb-3">
-                    <label for="password_confirm" class="form-label">Confirm Password</label>
-                    <input type="password" class="form-control" id="password_confirm" name="password_confirm" placeholder="Re-enter your password" required>
-                </div>
-                <div class="mb-3">
-                    <label for="role" class="form-label">Register as</label>
-                    <select class="form-select" id="role" name="role" required>
-                        <option value="innovator">Innovator</option>
-                        <option value="sponsor">Sponsor/Investor</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label for="organization" class="form-label">Organization <span class="text-muted">(optional)</span></label>
-                    <input type="text" class="form-control" id="organization" name="organization" placeholder="e.g. Addis Tech Hub">
-                </div>
-                <div class="mb-3">
-                    <label for="bio" class="form-label">Short Bio <span class="text-muted">(optional)</span></label>
-                    <textarea class="form-control" id="bio" name="bio" rows="2" placeholder="Tell us a bit about yourself and your interests"></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary w-100">Register</button>
-                <div class="mt-3 text-center">
-                    <a href="/login" class="form-link">Already have an account? Login here</a>
-                </div>
-            </form>
+            </div>
+
         </div>
     </div>
-</div> 
+</div>
+<script>
+function togglePassword(inputId, btn) {
+    const input = document.getElementById(inputId);
+    const icon = btn.querySelector('i');
+    
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('bi-eye');
+        icon.classList.add('bi-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.remove('bi-eye-slash');
+        icon.classList.add('bi-eye');
+    }
+}
+</script>

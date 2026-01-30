@@ -8,7 +8,7 @@
                     <img src="<?= !empty($user['profile_image']) ? htmlspecialchars($user['profile_image']) : '/assets/default-profile.png' ?>" alt="Profile" class="rounded-circle" style="width:48px;height:48px;object-fit:cover;">
                     <div>
                         <div style="font-weight:600; font-size:1.1rem;"><?= htmlspecialchars($user['name']) ?></div>
-                        <div style="font-size:0.97rem; color:#666;"> <?= htmlspecialchars($user['email']) ?> </div>
+                        <div class="text-muted" style="font-size:0.97rem;"> <?= htmlspecialchars($user['email']) ?> </div>
                     </div>
                 </div>
                 <a href="/messages/send?receiver_id=<?= $user['id'] ?>" class="btn btn-primary btn-sm">Message</a>

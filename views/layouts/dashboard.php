@@ -1,85 +1,625 @@
+<?php
+// Fetch real notification counts
+$notifications = [];
+$totalNotifications = 0;
+
+if (isset($currentUser)) {
+    // Get database instance (singleton)
+    require_once __DIR__ . '/../../config/database.php';
+    $db = Database::getInstance();
+    
+    // Unread messages count
+    $unreadMessages = $db->fetch("SELECT COUNT(*) as count FROM messages WHERE receiver_id = :user_id AND is_read = 0", ['user_id' => $currentUser['id']]);
+    $unreadMsgCount = $unreadMessages['count'] ?? 0;
+    if ($unreadMsgCount > 0) {
+        $notifications[] = [
+            'type' => 'message',
+            'icon' => 'bi-envelope-fill',
+            'color' => 'primary',
+            'text' => "You have {$unreadMsgCount} unread message" . ($unreadMsgCount > 1 ? 's' : ''),
+            'link' => '/messages',
+            'count' => $unreadMsgCount
+        ];
+        $totalNotifications += $unreadMsgCount;
+    }
+    
+    // Role-specific notifications
+    if ($currentUser['role'] === 'innovator') {
+        // Check for new sponsorship requests
+        try {
+            $sponsorships = $db->fetch("SELECT COUNT(*) as count FROM sponsorships WHERE innovation_id IN (SELECT id FROM innovations WHERE user_id = :user_id) AND status = 'pending'", ['user_id' => $currentUser['id']]);
+            $sponsorCount = $sponsorships['count'] ?? 0;
+            if ($sponsorCount > 0) {
+                $notifications[] = [
+                    'type' => 'sponsorship',
+                    'icon' => 'bi-cash-coin',
+                    'color' => 'success',
+                    'text' => "You have {$sponsorCount} pending sponsorship" . ($sponsorCount > 1 ? 's' : ''),
+                    'link' => '/my-sponsorships',
+                    'count' => $sponsorCount
+                ];
+                $totalNotifications += $sponsorCount;
+            }
+        } catch (Exception $e) {}
+    }
+    
+    if ($currentUser['role'] === 'admin') {
+        // Pending innovations for approval
+        try {
+            $pendingInnovations = $db->fetch("SELECT COUNT(*) as count FROM innovations WHERE status = 'draft'");
+            $pendingCount = $pendingInnovations['count'] ?? 0;
+            if ($pendingCount > 0) {
+                $notifications[] = [
+                    'type' => 'pending',
+                    'icon' => 'bi-hourglass-split',
+                    'color' => 'warning',
+                    'text' => "{$pendingCount} innovation" . ($pendingCount > 1 ? 's' : '') . " awaiting review",
+                    'link' => '/admin/innovations',
+                    'count' => $pendingCount
+                ];
+                $totalNotifications += $pendingCount;
+            }
+        } catch (Exception $e) {}
+        
+        // New users today
+        try {
+            $newUsers = $db->fetch("SELECT COUNT(*) as count FROM users WHERE DATE(created_at) = CURDATE()");
+            $newUserCount = $newUsers['count'] ?? 0;
+            if ($newUserCount > 0) {
+                $notifications[] = [
+                    'type' => 'users',
+                    'icon' => 'bi-person-plus-fill',
+                    'color' => 'info',
+                    'text' => "{$newUserCount} new user" . ($newUserCount > 1 ? 's' : '') . " joined today",
+                    'link' => '/admin/users',
+                    'count' => $newUserCount
+                ];
+            }
+        } catch (Exception $e) {}
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Innovation Trading Center Dashboard</title>
+    <title><?= htmlspecialchars($title ?? 'Dashboard') ?> | Innovation Trading Center</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/public/assets/css/styles.css?v=<?= time() ?>" rel="stylesheet">
+    <script src="/public/assets/js/theme.js"></script>
     <style>
-        body { background: #f4f8fb; }
-        .sidebar {
+        :root {
+            --sidebar-width: 280px;
+            --header-height: 70px;
+            --sidebar-bg: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+        }
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #f1f5f9;
             min-height: 100vh;
-            background: linear-gradient(180deg, #007bff 0%, #00c6ff 100%);
-            color: #fff;
-            padding: 2rem 1rem 1rem 1rem;
         }
-        .sidebar .nav-link {
-            color: #fff;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-            border-radius: 0.5rem;
+        
+        /* Sidebar */
+        .dashboard-sidebar {
+            width: var(--sidebar-width);
+            min-height: 100vh;
+            background: var(--sidebar-bg);
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
         }
-        .sidebar .nav-link.active, .sidebar .nav-link:hover {
-            background: rgba(255,255,255,0.15);
-            color: #fff;
+        
+        .sidebar-brand {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .sidebar .sidebar-logo {
-            font-size: 1.5rem;
-            font-weight: 800;
-            letter-spacing: -1px;
-            margin-bottom: 2rem;
+        
+        .sidebar-brand h4 {
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.25rem;
+            margin: 0;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.75rem;
         }
-        @media (max-width: 991px) {
-            .sidebar { min-height: auto; padding: 1rem 0.5rem; }
+        
+        .sidebar-brand .brand-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+        
+        .sidebar-nav {
+            padding: 1rem;
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        .nav-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .nav-section-title {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 0 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .dashboard-sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 500;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.25rem;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.2s ease;
+        }
+        
+        .dashboard-sidebar .nav-link i {
+            font-size: 1.1rem;
+            width: 24px;
+            text-align: center;
+        }
+        
+        .dashboard-sidebar .nav-link:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            transform: translateX(4px);
+        }
+        
+        .dashboard-sidebar .nav-link.active {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+        }
+        
+        .dashboard-sidebar .nav-link.logout-link {
+            color: #f87171;
+        }
+        
+        .dashboard-sidebar .nav-link.logout-link:hover {
+            background: rgba(248, 113, 113, 0.1);
+            color: #fca5a5;
+        }
+        
+        .sidebar-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar-user {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .sidebar-user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .sidebar-user-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .sidebar-user-name {
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .sidebar-user-role {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.75rem;
+            text-transform: capitalize;
+        }
+        
+        /* Main Content */
+        .dashboard-main {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+        }
+        
+        .dashboard-header {
+            height: var(--header-height);
+            background: #fff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        
+        .dashboard-header h4 {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: #0f172a;
+            margin: 0;
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .header-search {
+            position: relative;
+        }
+        
+        .header-search input {
+            padding: 0.5rem 1rem 0.5rem 2.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            background: #f8fafc;
+            width: 250px;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        
+        .header-search input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .header-search i {
+            position: absolute;
+            left: 0.875rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+        
+        .header-icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 0.75rem;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            transition: all 0.2s;
+            position: relative;
+        }
+        
+        .header-icon-btn:hover {
+            background: #f8fafc;
+            color: #3b82f6;
+            border-color: #3b82f6;
+        }
+        
+        .header-icon-btn .badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 18px;
+            height: 18px;
+            font-size: 0.65rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .dashboard-content {
+            padding: 2rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 991.98px) {
+            .dashboard-sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            
+            .dashboard-sidebar.show {
+                transform: translateX(0);
+            }
+            
+            .dashboard-main {
+                margin-left: 0;
+            }
+            
+            .mobile-menu-btn {
+                display: flex !important;
+            }
+            
+            .sidebar-close-btn {
+                display: flex !important;
+            }
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 0.75rem;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            margin-right: 1rem;
+        }
+        
+        .sidebar-close-btn {
+            display: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 0.5rem;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .sidebar-close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+        
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            backdrop-filter: blur(4px);
+        }
+        
+        .sidebar-overlay.show {
+            display: block;
         }
     </style>
 </head>
 <body>
-<div class="container-fluid">
-    <div class="row">
-        <nav class="col-lg-2 col-md-3 sidebar d-flex flex-column align-items-start">
-            <?php if (isset($currentUser) && $currentUser): ?>
-                <div class="w-100 text-center mb-4 p-3" style="background:rgba(255,255,255,0.10); border-radius:1rem; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
-                    <?php
-                    $profileImg = '/assets/default-profile.png';
-                    if (!empty($currentUser['profile_image'])) {
-                        $profileImg = (strpos($currentUser['profile_image'], '/') === 0)
-                            ? $currentUser['profile_image']
-                            : '/' . $currentUser['profile_image'];
-                    }
-                    ?>
-                    <img src="<?= htmlspecialchars($profileImg) ?>" alt="Profile Image" class="rounded-circle mb-2" style="width: 64px; height: 64px; object-fit: cover; border: 2px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.10);">
-                    <div style="font-weight:700; font-size:1.15rem; color:#fff; margin-bottom:0.1rem;">
-                        <?= htmlspecialchars($currentUser['name'] ?? 'User') ?>
-                    </div>
-                    <div style="font-size:0.95rem; color:#e0eaff; opacity:0.85;">
-                        <?= htmlspecialchars($currentUser['role'] ?? '') ?>
-                    </div>
-                </div>
-            <?php endif; ?>
-            <div class="sidebar-logo mb-4">
-                <i class="bi bi-lightbulb"></i> Innovation Center
+    <!-- Sidebar -->
+    <aside class="dashboard-sidebar" id="sidebar">
+        <div class="sidebar-brand d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">
+                <span class="brand-icon"><i class="bi bi-lightning-charge-fill"></i></span>
+                InoTrade
+            </h4>
+            <button class="sidebar-close-btn" onclick="closeSidebar()">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <div class="nav-section-title">Main Menu</div>
+                <a class="nav-link <?= strpos($_SERVER['REQUEST_URI'], '/dashboard') === 0 && strlen($_SERVER['REQUEST_URI']) <= 11 ? 'active' : '' ?>" href="/dashboard">
+                    <i class="bi bi-grid-1x2-fill"></i> Dashboard
+                </a>
+                <a class="nav-link <?= strpos($_SERVER['REQUEST_URI'], '/innovations') === 0 ? 'active' : '' ?>" href="/innovations">
+                    <i class="bi bi-lightbulb-fill"></i> Innovations
+                </a>
+                <a class="nav-link <?= strpos($_SERVER['REQUEST_URI'], '/messages') === 0 ? 'active' : '' ?>" href="/messages">
+                    <i class="bi bi-chat-dots-fill"></i> Messages
+                </a>
             </div>
-            <a href="/dashboard" class="nav-link<?= strpos($_SERVER['REQUEST_URI'], '/dashboard') === 0 ? ' active' : '' ?>"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
-            <a href="/innovations" class="nav-link<?= strpos($_SERVER['REQUEST_URI'], '/innovations') === 0 ? ' active' : '' ?>"><i class="bi bi-collection me-2"></i> Innovations</a>
-            <a href="/messages" class="nav-link<?= strpos($_SERVER['REQUEST_URI'], '/messages') === 0 ? ' active' : '' ?>"><i class="bi bi-envelope me-2"></i> Messages</a>
-            <a href="/profile" class="nav-link<?= strpos($_SERVER['REQUEST_URI'], '/profile') === 0 ? ' active' : '' ?>"><i class="bi bi-person me-2"></i> Profile</a>
-            <a href="/my-innovations" class="nav-link<?= strpos($_SERVER['REQUEST_URI'], '/my-innovations') === 0 ? ' active' : '' ?>"><i class="bi bi-star me-2"></i> My Innovations</a>
-            <a href="/favorites" class="nav-link<?= strpos($_SERVER['REQUEST_URI'], '/favorites') === 0 ? ' active' : '' ?>"><i class="bi bi-heart me-2"></i> Favorites</a>
-            <?php if (isset($currentUser) && $currentUser['role'] === 'innovator'): ?>
-                <a href="/my-sponsorships" class="nav-link<?= strpos($_SERVER['REQUEST_URI'], '/my-sponsorships') === 0 ? ' active' : '' ?>"><i class="bi bi-cash-coin me-2"></i> Sponsorships</a>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Personal</div>
+                <a class="nav-link <?= strpos($_SERVER['REQUEST_URI'], '/profile') === 0 ? 'active' : '' ?>" href="/profile">
+                    <i class="bi bi-person-fill"></i> Profile
+                </a>
+                <a class="nav-link <?= strpos($_SERVER['REQUEST_URI'], '/my-innovations') === 0 ? 'active' : '' ?>" href="/my-innovations">
+                    <i class="bi bi-rocket-takeoff-fill"></i> My Innovations
+                </a>
+                <a class="nav-link <?= strpos($_SERVER['REQUEST_URI'], '/favorites') === 0 ? 'active' : '' ?>" href="/favorites">
+                    <i class="bi bi-heart-fill"></i> Favorites
+                </a>
+                <?php if (isset($currentUser) && $currentUser['role'] === 'innovator'): ?>
+                    <a class="nav-link <?= strpos($_SERVER['REQUEST_URI'], '/my-sponsorships') === 0 ? 'active' : '' ?>" href="/my-sponsorships">
+                        <i class="bi bi-cash-coin"></i> Sponsorships
+                    </a>
+                <?php endif; ?>
+            </div>
+            
+            <?php if (isset($currentUser) && $currentUser['role'] === 'admin'): ?>
+            <div class="nav-section">
+                <div class="nav-section-title">Administration</div>
+                <a class="nav-link <?= strpos($_SERVER['REQUEST_URI'], '/admin/users') === 0 ? 'active' : '' ?>" href="/admin/users">
+                    <i class="bi bi-people-fill"></i> Manage Users
+                </a>
+                <a class="nav-link <?= strpos($_SERVER['REQUEST_URI'], '/admin/innovations') === 0 ? 'active' : '' ?>" href="/admin/innovations">
+                    <i class="bi bi-kanban-fill"></i> Manage Innovations
+                </a>
+                <a class="nav-link <?= strpos($_SERVER['REQUEST_URI'], '/admin/messages') === 0 ? 'active' : '' ?>" href="/admin/messages">
+                    <i class="bi bi-envelope-fill"></i> All Messages
+                </a>
+                <a class="nav-link <?= strpos($_SERVER['REQUEST_URI'], '/admin/contact-messages') === 0 ? 'active' : '' ?>" href="/admin/contact-messages">
+                    <i class="bi bi-inbox-fill"></i> Public Inquiries
+                </a>
+            </div>
             <?php endif; ?>
-            <a href="/logout" class="nav-link"><i class="bi bi-box-arrow-right me-2"></i> Logout</a>
+            
+            <div class="nav-section mt-auto">
+                <a class="nav-link" href="/home">
+                    <i class="bi bi-house-fill"></i> Back to Home
+                </a>
+                <a class="nav-link logout-link" href="/logout">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </a>
+            </div>
         </nav>
-        <main class="col-lg-10 col-md-9 ms-sm-auto px-4 py-4">
-            <?= isset($content) ? $content : '' ?>
+        
+        <?php if (isset($currentUser)): ?>
+        <div class="sidebar-footer">
+            <div class="sidebar-user">
+                <img src="<?= htmlspecialchars($currentUser['profile_image'] ?? '/public/assets/default-profile.png') ?>" alt="Profile" class="sidebar-user-avatar">
+                <div class="sidebar-user-info">
+                    <div class="sidebar-user-name"><?= htmlspecialchars($currentUser['name']) ?></div>
+                    <div class="sidebar-user-role"><?= htmlspecialchars($currentUser['role']) ?></div>
+                </div>
+            </div>
+        </div>
+        <?php endif; ?>
+    </aside>
+    
+    <!-- Main Content -->
+    <div class="dashboard-main">
+        <header class="dashboard-header">
+            <div class="d-flex align-items-center">
+                <button class="mobile-menu-btn" onclick="openSidebar()">
+                    <i class="bi bi-list"></i>
+                </button>
+                <h4><?= htmlspecialchars($title ?? 'Dashboard') ?></h4>
+            </div>
+            
+            <div class="header-actions">
+                <button class="header-icon-btn border-0 me-3" type="button" onclick="toggleTheme()" aria-label="Toggle theme">
+                    <i class="bi bi-moon-fill theme-icon"></i>
+                </button>
+                <div class="header-search d-none d-md-block">
+                    <i class="bi bi-search"></i>
+                    <input type="text" placeholder="Search...">
+                </div>
+                
+                <!-- Notifications Dropdown -->
+                <div class="dropdown">
+                    <button class="header-icon-btn position-relative border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-bell"></i>
+                        <?php if ($totalNotifications > 0): ?>
+                            <span class="badge bg-danger rounded-pill position-absolute" style="top: -4px; right: -4px; font-size: 0.65rem;"><?= $totalNotifications > 9 ? '9+' : $totalNotifications ?></span>
+                        <?php endif; ?>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-3 p-2" style="width: 320px; max-height: 400px; overflow-y: auto;">
+                        <li class="px-3 py-2 border-bottom">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0 fw-bold">Notifications</h6>
+                                <?php if ($totalNotifications > 0): ?>
+                                    <span class="badge bg-primary rounded-pill"><?= $totalNotifications ?></span>
+                                <?php endif; ?>
+                            </div>
+                        </li>
+                        <?php if (empty($notifications)): ?>
+                            <li class="px-3 py-4 text-center text-muted">
+                                <i class="bi bi-bell-slash fs-3 d-block mb-2"></i>
+                                No new notifications
+                            </li>
+                        <?php else: ?>
+                            <?php foreach ($notifications as $notif): ?>
+                                <li>
+                                    <a class="dropdown-item rounded-2 py-2 d-flex align-items-center gap-3" href="<?= $notif['link'] ?>">
+                                        <div class="bg-<?= $notif['color'] ?> bg-opacity-10 text-<?= $notif['color'] ?> rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; flex-shrink: 0;">
+                                            <i class="bi <?= $notif['icon'] ?>"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <div class="small fw-medium"><?= htmlspecialchars($notif['text']) ?></div>
+                                            <div class="text-muted" style="font-size: 0.75rem;">Click to view</div>
+                                        </div>
+                                    </a>
+                                </li>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                        <li class="border-top mt-2 pt-2">
+                            <a class="dropdown-item rounded-2 py-2 text-center text-primary small" href="/messages">
+                                <i class="bi bi-envelope me-1"></i> View all messages
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <?php if (isset($currentUser)): ?>
+                <div class="dropdown">
+                    <button class="header-icon-btn dropdown-toggle border-0" type="button" data-bs-toggle="dropdown">
+                        <img src="<?= htmlspecialchars($currentUser['profile_image'] ?? '/public/assets/default-profile.png') ?>" alt="Profile" class="rounded" width="28" height="28" style="object-fit: cover;">
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-3 p-2">
+                        <li><a class="dropdown-item rounded-2 py-2" href="/profile"><i class="bi bi-person me-2"></i> Profile</a></li>
+                        <li><a class="dropdown-item rounded-2 py-2" href="/home"><i class="bi bi-house me-2"></i> Home</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item rounded-2 py-2 text-danger" href="/logout"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
+                    </ul>
+                </div>
+                <?php endif; ?>
+            </div>
+        </header>
+        
+        <main class="dashboard-content">
+            <?php if (isset($_SESSION['flash'])): ?>
+                <?php 
+                $alertType = $_SESSION['flash']['type'] === 'error' ? 'danger' : $_SESSION['flash']['type'];
+                $alertIcon = match($alertType) {
+                    'success' => 'bi-check-circle-fill',
+                    'danger' => 'bi-exclamation-triangle-fill',
+                    'warning' => 'bi-exclamation-circle-fill',
+                    'info' => 'bi-info-circle-fill',
+                    default => 'bi-bell-fill'
+                };
+                ?>
+                <div class="alert alert-<?= $alertType ?> alert-dismissible fade show shadow-sm border-0 rounded-3 mb-4 d-flex align-items-center" role="alert">
+                    <i class="bi <?= $alertIcon ?> fs-4 me-3"></i>
+                    <div>
+                        <?= htmlspecialchars($_SESSION['flash']['message']) ?>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <?php unset($_SESSION['flash']); ?>
+            <?php endif; ?>
+            
+            <?= $content ?? '' ?>
         </main>
     </div>
-</div>
-<script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+    
+    <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function openSidebar() {
+            document.getElementById('sidebar').classList.add('show');
+            document.getElementById('sidebarOverlay').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('show');
+            document.getElementById('sidebarOverlay').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+    </script>
 </body>
-</html> 
+</html>

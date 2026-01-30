@@ -19,16 +19,18 @@
                 </thead>
                 <tbody>
                     <?php foreach ($sponsorships as $s): ?>
+                        <?php if (!is_array($s) || !isset($s['id'])) continue; ?>
                         <tr>
-                            <td><?= htmlspecialchars($s['innovation_title']) ?></td>
-                            <td><?= htmlspecialchars($s['sponsor_name']) ?></td>
-                            <td><?= $s['amount'] !== null ? number_format($s['amount'], 2) : 'N/A' ?></td>
+                            <td><?= htmlspecialchars($s['innovation_title'] ?? '') ?></td>
+                            <td><?= htmlspecialchars($s['sponsor_name'] ?? 'Unknown') ?></td>
+                            <td><?= isset($s['amount']) && $s['amount'] !== null ? number_format($s['amount'], 2) : 'N/A' ?></td>
                             <td>
                                 <form method="post" action="/update-sponsorship-status" style="display:inline;">
                                     <input type="hidden" name="id" value="<?= $s['id'] ?>">
                                     <select name="status" class="form-select form-select-sm d-inline w-auto" style="min-width:110px;display:inline;">
+                                        <?php $currentStatus = $s['status'] ?? 'pending'; ?>
                                         <?php foreach (["pending", "approved", "completed", "rejected"] as $opt): ?>
-                                            <option value="<?= $opt ?>" <?= $s['status'] === $opt ? 'selected' : '' ?>>
+                                            <option value="<?= $opt ?>" <?= $currentStatus === $opt ? 'selected' : '' ?>>
                                                 <?= ucfirst($opt) ?>
                                             </option>
                                         <?php endforeach; ?>
@@ -36,7 +38,7 @@
                                     <button type="submit" class="btn btn-sm btn-primary">Update</button>
                                 </form>
                             </td>
-                            <td><?= date('M j, Y', strtotime($s['created_at'])) ?></td>
+                            <td><?= isset($s['created_at']) ? date('M j, Y', strtotime($s['created_at'])) : '-' ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
